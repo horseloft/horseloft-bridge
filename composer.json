@@ -1,0 +1,21 @@
+{
+  "name": "horseloft/horseloft-bridge",
+  "type": "library",
+  "description": "horseloft php api framework",
+  "keywords": ["horseloft", "php"],
+  "authors": [
+    {
+      "name": "YHC",
+      "homepage": "https://github.com/horseloft"
+    }
+  ],
+  "require": {
+    "php": ">=7.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Horseloft\\Bridge\\": "src"
+    }
+  },
+  "license": "MIT"
+}
