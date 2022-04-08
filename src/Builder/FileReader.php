@@ -1,7 +1,7 @@
 <?php
 namespace Horseloft\Bridge\Builder;
 
-use Horseloft\Bridge\BridgeException;
+use Horseloft\Bridge\HorseloftBridgeException;
 use Horseloft\Bridge\Handler\Container;
 
 class FileReader
@@ -12,11 +12,54 @@ class FileReader
     private $applicationRoot;
 
     /**
-     * @param string $applicationRoot
+     * @var string
      */
-    public function __construct(string $applicationRoot)
+    private $namespace;
+
+    /**
+     * @param string $applicationRoot
+     * @param string $namespace
+     */
+    public function __construct(string $applicationRoot, string $namespace)
     {
-        $this->applicationRoot = trim($applicationRoot, '/') . '/';
+        $this->applicationRoot = rtrim($applicationRoot, '/') . '/';
+
+        $this->namespace = $namespace . '\\';
+
+        Container::setNamespace($this->namespace);
+
+        Container::setApplicationPath($this->applicationRoot);
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     *  读取路由配置
+     * --------------------------------------------------------------------------
+     */
+    public function readAndSetRoute()
+    {
+        $routePath = $this->applicationRoot . 'Route';
+        if (!is_dir($routePath)) {
+            return;
+        }
+        $fileInfo = [];
+        $handle = opendir($routePath);
+        while (false !== $file = readdir($handle)) {
+            if ($file == '.' || $file == '..' || !is_file($routePath . '/' . $file)) {
+                continue;
+            } else {
+                try {
+                    $suffix = substr($file, -4);
+                    if ($suffix == false || $suffix != '.php') {
+                        continue;
+                    }
+                    require_once $routePath . '/' . $file;
+                } catch (\Exception $e){
+                    continue;
+                }
+            }
+        }
+        closedir($handle);
     }
 
     /**
@@ -27,21 +70,32 @@ class FileReader
     public function readAndSetEnv()
     {
         $env = $this->readIniFile($this->applicationRoot . 'env.ini');
-        if (empty($application)) {
-            throw new BridgeException('missing env file');
+        if (empty($env)) {
+            throw new HorseloftBridgeException('missing env file');
         }
 
         // debug
         if ($env['debug'] === true) {
             Container::setDebug(true);
+            error_reporting(-1);
+        }
+
+        // 错误信息是否写入日志【默认值true】
+        if ($env['error_log'] === false) {
+            Container::setErrorLog(false);
+        }
+
+        // 错误信息的追踪信息是否写入日志【默认值true】
+        if ($env['error_log_trace'] === false) {
+            Container::setErrorLogTrace(false);
         }
 
         // 日志目录、日志文件
         if (is_dir($env['log_path'])) {
-            Container::setLogPath(trim($env['log_path'], '/') . '/');
+            Container::setLogPath('/' . trim($env['log_path'], '/') . '/');
         } else {
             if (!is_dir($this->applicationRoot . 'Log')) {
-                throw new BridgeException('missing log path');
+                throw new HorseloftBridgeException('missing log path');
             }
             Container::setLogPath($this->applicationRoot . 'Log/');
         }
@@ -51,6 +105,7 @@ class FileReader
 
         // env.ini文件内容以数组格式保留
         Container::setEnv($env);
+        unset($env);
     }
 
     /**
@@ -62,7 +117,7 @@ class FileReader
     {
         $configPath = Container::getConfigPath();
         if (!is_dir($configPath)) {
-            throw new BridgeException('missing config path');
+            throw new HorseloftBridgeException('missing config path');
         }
 
         $handle = opendir($configPath);
@@ -87,6 +142,80 @@ class FileReader
             }
         }
         closedir($handle);
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     *  自动读取 Interceptor 目录下的类文件 并作为拦截器使用
+     * --------------------------------------------------------------------------
+     *
+     * 1. 以小驼峰格式的文件名称作为拦截器名称
+     *
+     * 2. 类中必须有handle方法
+     *
+     * 3. handle方法必须有一个Request类型的参数
+     *
+     * 4. Request类全路径：Horseloft\Core\Drawer\Request
+     */
+    public function readSetInterceptor()
+    {
+        $dir = $this->applicationRoot . 'Application/Interceptor';
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        $interceptor = [];
+        $namespace = $this->namespace . 'Interceptor\\';
+        $handle = opendir($dir);
+        while (false !== $file = readdir($handle)) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            } else {
+                try {
+                    $suffix = substr($file, -4);
+                    if ($suffix == false || $suffix != '.php') {
+                        continue;
+                    }
+                    $interceptorName = ucfirst(substr($file, 0, -4));
+                    $interceptorClass = $namespace . $interceptorName;
+                    $cls = new \ReflectionClass($interceptorClass);
+                    $method = $cls->getMethod('handle');
+                    $methodNumber = $method->getNumberOfParameters();
+                    if ($methodNumber == 0) {
+                        throw new HorseloftBridgeException(
+                            'Interceptor[' . $interceptorName . '->handle] missing parameter: Request'
+                        );
+                    }
+                    if ($methodNumber > 1) {
+                        throw new HorseloftBridgeException(
+                            'Interceptor[' . $interceptorName . '->handle] allow only a [Request] type parameter'
+                        );
+                    }
+
+                    $params = $method->getParameters();
+                    $paramClass = $params[0]->getClass();
+                    if (is_null($paramClass)) {
+                        throw new HorseloftBridgeException(
+                            'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
+                        );
+                    }
+
+                    $paramClassName = $paramClass->getName();
+                    if ($paramClassName != 'Horseloft\Bridge\Builder\Request') {
+                        throw new HorseloftBridgeException(
+                            'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
+                        );
+                    }
+                    $interceptor[$interceptorName] = [$interceptorClass, 'handle'];
+
+                } catch (\Exception $e){
+                    throw new HorseloftBridgeException($e->getMessage() . PHP_EOL . $e->getTraceAsString());
+                }
+            }
+        }
+        Container::setInterceptor($interceptor);
+        closedir($handle);
+        unset($interceptor);
     }
 
     /**

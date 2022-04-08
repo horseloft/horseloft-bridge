@@ -1,10 +1,10 @@
 <?php
 
-namespace Horseloft\Bridge;
+namespace Horseloft\Bridge\Exceptions;
 
 use Throwable;
 
-class BridgeException extends \RuntimeException
+class HorseloftBridgeException extends \RuntimeException
 {
     public function __construct($message = "", $code = 4004, Throwable $previous = null)
     {

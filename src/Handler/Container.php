@@ -5,9 +5,29 @@ namespace Horseloft\Bridge\Handler;
 class Container
 {
     /**
+     * @var string
+     */
+    private static $namespace;
+
+    /**
+     * @var string
+     */
+    private static $applicationPath;
+
+    /**
      * @var bool
      */
     private static $debug = false;
+
+    /**
+     * @var bool
+     */
+    private static $errorLog = true;
+
+    /**
+     * @var bool
+     */
+    private static $errorLogTrace = false;
 
     /**
      * @var string
@@ -42,12 +62,37 @@ class Container
     /**
      * @var string
      */
+    private static $requestRoute = '';
+
+    /**
+     * @var string
+     */
     private static $requestUri = '';
 
     /**
      * @var string
      */
     private static $requestIP = '';
+
+    /**
+     * @var string
+     */
+    private static $requestUserAgent = '';
+
+    /**
+     * @var array
+     */
+    private static $requestInterceptor = [];
+
+    /**
+     * @var string
+     */
+    private static $requestAction = [];
+
+    /**
+     * @var array
+     */
+    private static $requestSession = [];
 
     /**
      * @var array
@@ -67,12 +112,54 @@ class Container
     /**
      * @var array
      */
-    private static $route = [];
+    private static $requestParamter = [];
+
+    /**
+     * @var array
+     */
+    private static $routerGet = [];
+
+    /**
+     * @var array
+     */
+    private static $routerPost = [];
 
     /**
      * @var array
      */
     private static $interceptor = [];
+
+    /**
+     * @return string
+     */
+    public static function getNamespace(): string
+    {
+        return self::$namespace;
+    }
+
+    /**
+     * @param string $namespace
+     */
+    public static function setNamespace(string $namespace): void
+    {
+        self::$namespace = $namespace;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getApplicationPath(): string
+    {
+        return self::$applicationPath;
+    }
+
+    /**
+     * @param string $applicationPath
+     */
+    public static function setApplicationPath(string $applicationPath): void
+    {
+        self::$applicationPath = $applicationPath;
+    }
 
     /**
      * @return bool
@@ -88,6 +175,38 @@ class Container
     public static function setDebug(bool $debug): void
     {
         self::$debug = $debug;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isErrorLog(): bool
+    {
+        return self::$errorLog;
+    }
+
+    /**
+     * @param bool $errorLog
+     */
+    public static function setErrorLog(bool $errorLog): void
+    {
+        self::$errorLog = $errorLog;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isErrorLogTrace(): bool
+    {
+        return self::$errorLogTrace;
+    }
+
+    /**
+     * @param bool $errorLogTrace
+     */
+    public static function setErrorLogTrace(bool $errorLogTrace): void
+    {
+        self::$errorLogTrace = $errorLogTrace;
     }
 
     /**
@@ -206,6 +325,22 @@ class Container
     /**
      * @return string
      */
+    public static function getRequestRoute(): string
+    {
+        return self::$requestRoute;
+    }
+
+    /**
+     * @param string $requestRoute
+     */
+    public static function setRequestRoute(string $requestRoute): void
+    {
+        self::$requestRoute = $requestRoute;
+    }
+
+    /**
+     * @return string
+     */
     public static function getRequestIP(): string
     {
         return self::$requestIP;
@@ -217,6 +352,22 @@ class Container
     public static function setRequestIP(string $requestIP): void
     {
         self::$requestIP = $requestIP;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getRequestUserAgent(): string
+    {
+        return self::$requestUserAgent;
+    }
+
+    /**
+     * @param string $requestUserAgent
+     */
+    public static function setRequestUserAgent(string $requestUserAgent): void
+    {
+        self::$requestUserAgent = $requestUserAgent;
     }
 
     /**
@@ -233,6 +384,54 @@ class Container
     public static function setRequestHeader(array $requestHeader): void
     {
         self::$requestHeader = $requestHeader;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRequestInterceptor(): array
+    {
+        return self::$requestInterceptor;
+    }
+
+    /**
+     * @param array $requestInterceptor
+     */
+    public static function setRequestInterceptor(array $requestInterceptor): void
+    {
+        self::$requestInterceptor = $requestInterceptor;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getRequestAction(): string
+    {
+        return self::$requestAction;
+    }
+
+    /**
+     * @param string $requestAction
+     */
+    public static function setRequestAction(string $requestAction): void
+    {
+        self::$requestAction = $requestAction;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRequestSession(): array
+    {
+        return self::$requestSession;
+    }
+
+    /**
+     * @param array $requestSession
+     */
+    public static function setRequestSession(array $requestSession): void
+    {
+        self::$requestSession = $requestSession;
     }
 
     /**
@@ -270,17 +469,49 @@ class Container
     /**
      * @return array
      */
-    public static function getRoute(): array
+    public static function getRequestParamter(): array
     {
-        return self::$route;
+        return self::$requestParamter;
     }
 
     /**
-     * @param array $route
+     * @param array $requestParamter
      */
-    public static function setRoute(array $route): void
+    public static function setRequestParamter(array $requestParamter): void
     {
-        self::$route = $route;
+        self::$requestParamter = array_merge(self::$requestParamter, $requestParamter);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRouterGet(): array
+    {
+        return self::$routerGet;
+    }
+
+    /**
+     * @param array $routerGet
+     */
+    public static function setRouterGet(array $routerGet): void
+    {
+        self::$routerGet = array_merge(self::$routerGet, $routerGet);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRouterPost(): array
+    {
+        return self::$routerPost;
+    }
+
+    /**
+     * @param array $routerPost
+     */
+    public static function setRouterPost(array $routerPost): void
+    {
+        self::$routerPost = array_merge(self::$routerPost, $routerPost);
     }
 
     /**
