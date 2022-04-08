@@ -2,7 +2,7 @@
 
 namespace Horseloft\Bridge\Builder;
 
-use Horseloft\Bridge\Exceptions\HorseloftHorseloftBridgeException;
+use Horseloft\Bridge\Exceptions\HorseloftBridgeException;
 use Horseloft\Bridge\Handler\Container;
 use Horseloft\Bridge\Handler\Logger;
 
@@ -68,10 +68,10 @@ class HttpRequest
         // 拦截器验证
         foreach ($requestInterceptor as $interceptor) {
             if (!isset($allInterceptor[$interceptor])) {
-                throw new HorseloftHorseloftBridgeException($interceptor . ' Not Found');
+                throw new HorseloftBridgeException($interceptor . ' Not Found');
             }
             if (!is_callable($allInterceptor[$interceptor])) {
-                throw new HorseloftHorseloftBridgeException($interceptor . ' Is Not Callable');
+                throw new HorseloftBridgeException($interceptor . ' Is Not Callable');
             }
             $response = call_user_func($allInterceptor[$interceptor], new Request());
             if ($response !== true) {
@@ -89,7 +89,7 @@ class HttpRequest
         Container::setRequestAction($action);
         // action验证
         if (!is_callable($action)) {
-            throw new HorseloftHorseloftBridgeException('Action Is Not Callable');
+            throw new HorseloftBridgeException('Action Is Not Callable');
         }
 
         // 执行请求并输出结果

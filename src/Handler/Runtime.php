@@ -44,7 +44,7 @@ class Runtime
         }
 
         // 自定义异常信息
-        if (isset($response) && !is_null($response)) {
+        if (isset($response)) {
             Response::exit($response);
         }
 

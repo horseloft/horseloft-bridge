@@ -1,7 +1,7 @@
 <?php
 namespace Horseloft\Bridge\Builder;
 
-use Horseloft\Bridge\HorseloftBridgeException;
+use Horseloft\Bridge\Exceptions\HorseloftBridgeException;
 use Horseloft\Bridge\Handler\Container;
 
 class FileReader
