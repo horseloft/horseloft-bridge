@@ -1,5 +1,5 @@
 {
-  "name": "horseloft/horseloft-bridge",
+  "name": "horseloft/bridge",
   "type": "library",
   "description": "horseloft php api framework",
   "keywords": ["horseloft", "php"],
