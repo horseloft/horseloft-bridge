@@ -62,7 +62,7 @@ class Runtime
     {
         $e = error_get_last();
         if (!$e) {
-            return;
+            exit();
         }
         $msg = '';
         if (Container::isErrorLog()) {
