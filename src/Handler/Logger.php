@@ -1,6 +1,6 @@
 <?php
 
-namespace Horseloft\Bridge\Handler;
+namespace Horseloft\Phalanx\Handler;
 
 class Logger
 {

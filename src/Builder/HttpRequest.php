@@ -1,10 +1,10 @@
 <?php
 
-namespace Horseloft\Bridge\Builder;
+namespace Horseloft\Phalanx\Builder;
 
-use Horseloft\Bridge\Exceptions\HorseloftBridgeException;
-use Horseloft\Bridge\Handler\Container;
-use Horseloft\Bridge\Handler\Logger;
+use Horseloft\Phalanx\HorseloftPhalanxException;
+use Horseloft\Phalanx\Handler\Container;
+use Horseloft\Phalanx\Handler\Logger;
 
 class HttpRequest
 {
@@ -68,10 +68,10 @@ class HttpRequest
         // 拦截器验证
         foreach ($requestInterceptor as $interceptor) {
             if (!isset($allInterceptor[$interceptor])) {
-                throw new HorseloftBridgeException($interceptor . ' Not Found');
+                throw new HorseloftPhalanxException($interceptor . ' Not Found');
             }
             if (!is_callable($allInterceptor[$interceptor])) {
-                throw new HorseloftBridgeException($interceptor . ' Is Not Callable');
+                throw new HorseloftPhalanxException($interceptor . ' Is Not Callable');
             }
             $response = call_user_func($allInterceptor[$interceptor], new Request());
             if ($response !== true) {
@@ -89,7 +89,7 @@ class HttpRequest
         Container::setRequestAction($action);
         // action验证
         if (!is_callable($action)) {
-            throw new HorseloftBridgeException('Action Is Not Callable');
+            throw new HorseloftPhalanxException('Action Is Not Callable');
         }
 
         // 执行请求并输出结果

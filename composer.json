@@ -1,7 +1,7 @@
 {
-  "name": "horseloft/bridge",
+  "name": "horseloft/Phalanx",
   "type": "library",
-  "description": "horseloft php api framework",
+  "description": "library for Phoenix framework",
   "keywords": ["horseloft", "php"],
   "authors": [
     {
@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Horseloft\\Bridge\\": "src"
+      "Horseloft\\Phalanx\\": "src"
     }
   },
   "license": "MIT"

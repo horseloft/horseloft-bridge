@@ -1,8 +1,8 @@
 <?php
-namespace Horseloft\Bridge\Builder;
+namespace Horseloft\Phalanx\Builder;
 
-use Horseloft\Bridge\Exceptions\HorseloftBridgeException;
-use Horseloft\Bridge\Handler\Container;
+use Horseloft\Phalanx\HorseloftPhalanxException;
+use Horseloft\Phalanx\Handler\Container;
 
 class FileReader
 {
@@ -71,7 +71,7 @@ class FileReader
     {
         $env = $this->readIniFile($this->applicationRoot . 'env.ini');
         if (empty($env)) {
-            throw new HorseloftBridgeException('missing env file');
+            throw new HorseloftPhalanxException('missing env file');
         }
 
         // debug
@@ -95,7 +95,7 @@ class FileReader
             Container::setLogPath('/' . trim($env['log_path'], '/') . '/');
         } else {
             if (!is_dir($this->applicationRoot . 'Log')) {
-                throw new HorseloftBridgeException('missing log path');
+                throw new HorseloftPhalanxException('missing log path');
             }
             Container::setLogPath($this->applicationRoot . 'Log/');
         }
@@ -117,7 +117,7 @@ class FileReader
     {
         $configPath = Container::getConfigPath();
         if (!is_dir($configPath)) {
-            throw new HorseloftBridgeException('missing config path');
+            throw new HorseloftPhalanxException('missing config path');
         }
 
         $handle = opendir($configPath);
@@ -182,12 +182,12 @@ class FileReader
                     $method = $cls->getMethod('handle');
                     $methodNumber = $method->getNumberOfParameters();
                     if ($methodNumber == 0) {
-                        throw new HorseloftBridgeException(
+                        throw new HorseloftPhalanxException(
                             'Interceptor[' . $interceptorName . '->handle] missing parameter: Request'
                         );
                     }
                     if ($methodNumber > 1) {
-                        throw new HorseloftBridgeException(
+                        throw new HorseloftPhalanxException(
                             'Interceptor[' . $interceptorName . '->handle] allow only a [Request] type parameter'
                         );
                     }
@@ -195,21 +195,21 @@ class FileReader
                     $params = $method->getParameters();
                     $paramClass = $params[0]->getClass();
                     if (is_null($paramClass)) {
-                        throw new HorseloftBridgeException(
+                        throw new HorseloftPhalanxException(
                             'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
                         );
                     }
 
                     $paramClassName = $paramClass->getName();
-                    if ($paramClassName != 'Horseloft\Bridge\Builder\Request') {
-                        throw new HorseloftBridgeException(
+                    if ($paramClassName != 'Horseloft\Phalanx\Builder\Request') {
+                        throw new HorseloftPhalanxException(
                             'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
                         );
                     }
                     $interceptor[$interceptorName] = [$interceptorClass, 'handle'];
 
                 } catch (\Exception $e){
-                    throw new HorseloftBridgeException($e->getMessage() . PHP_EOL . $e->getTraceAsString());
+                    throw new HorseloftPhalanxException($e->getMessage() . PHP_EOL . $e->getTraceAsString());
                 }
             }
         }

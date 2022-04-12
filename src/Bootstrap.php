@@ -1,13 +1,12 @@
 <?php
 
-namespace Horseloft\Bridge;
+namespace Horseloft\Phalanx;
 
-use Horseloft\Bridge\Builder\FileReader;
-use Horseloft\Bridge\Builder\HttpRequest;
-use Horseloft\Bridge\Builder\Response;
-use Horseloft\Bridge\Exceptions\HorseloftBridgeException;
-use Horseloft\Bridge\Handler\Container;
-use Horseloft\Bridge\Handler\Runtime;
+use Horseloft\Phalanx\Builder\FileReader;
+use Horseloft\Phalanx\Builder\HttpRequest;
+use Horseloft\Phalanx\Builder\Response;
+use Horseloft\Phalanx\Handler\Container;
+use Horseloft\Phalanx\Handler\Runtime;
 
 class Bootstrap
 {
@@ -41,7 +40,7 @@ class Bootstrap
         $uri = Container::getRequestRoute();
         $router = $this->http->getRequestRouter();
         if (!isset($router[$uri])) {
-            throw new HorseloftBridgeException('Request Not Found');
+            throw new HorseloftPhalanxException('Request Not Found');
         }
 
         // 拦截器验证

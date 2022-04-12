@@ -1,9 +1,9 @@
 <?php
 
-namespace Horseloft\Bridge\Handler;
+namespace Horseloft\Phalanx\Handler;
 
-use Horseloft\Bridge\Builder\Request;
-use Horseloft\Bridge\Builder\Response;
+use Horseloft\Phalanx\Builder\Request;
+use Horseloft\Phalanx\Builder\Response;
 
 class Runtime
 {

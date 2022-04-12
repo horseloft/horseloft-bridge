@@ -1,10 +1,10 @@
 <?php
 
-namespace Horseloft\Bridge\Exceptions;
+namespace Horseloft\Phalanx;
 
 use Throwable;
 
-class HorseloftBridgeException extends \RuntimeException
+class HorseloftPhalanxException extends \RuntimeException
 {
     public function __construct($message = "", $code = 4004, Throwable $previous = null)
     {

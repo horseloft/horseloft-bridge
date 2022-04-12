@@ -1,6 +1,6 @@
 <?php
 
-namespace Horseloft\Bridge\Builder;
+namespace Horseloft\Phalanx\Builder;
 
 class Response
 {

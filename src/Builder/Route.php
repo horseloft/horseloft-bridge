@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Bridge\Builder;
+namespace Horseloft\Phalanx\Builder;
 
-use Horseloft\Bridge\Handler\Container;
+use Horseloft\Phalanx\Handler\Container;
 
 class Route
 {
