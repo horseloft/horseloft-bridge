@@ -40,13 +40,13 @@ class HttpRequest
         Container::setRequestIP($this->getRequestIP());
 
         // 请求参数 POST+GET+RAW
-        Container::setRequestParamter($this->getParamter());
+        Container::setRequestParameter($this->getParameter());
     }
 
     /**
      * @return array
      */
-    public function getRequestRouter()
+    public function getRequestRouter(): array
     {
         if (Container::getRequestMethod() === 'GET') {
             $router = Container::getRouterGet();
@@ -104,7 +104,7 @@ class HttpRequest
         $message = 'IP=' . Container::getRequestIP() .
             '; Route=' . Container::getRequestRoute() .
             '; Method=' . Container::getRequestMethod() .
-            '; Parameters=' . json_encode(Container::getRequestParamter()) .
+            '; Parameters=' . json_encode(Container::getRequestParameter()) .
             '; User-Agent=' . Container::getRequestUserAgent();
         Logger::info($message);
     }
@@ -112,23 +112,23 @@ class HttpRequest
     /**
      * @return array
      */
-    private function getParamter()
+    private function getParameter(): array
     {
-        $paramter = $_REQUEST;
+        $parameter = $_REQUEST;
         $content = file_get_contents('php://input');
         if (!empty($content)) {
             $json = json_decode(file_get_contents('php://input'), true);
             if (!empty($json)) {
-                $paramter = array_merge($paramter, $json);
+                $parameter = array_merge($parameter, $json);
             }
         }
-        return $paramter;
+        return $parameter;
     }
 
     /**
      * @return string
      */
-    private function getRequestIP()
+    private function getRequestIP(): string
     {
         $requestIP = $_SERVER['x-forwarded-for'] ?? $_SERVER['x-real-ip'] ?? $_SERVER['REMOTE_ADDR'];
         //如果是代理转发，IP为逗号分隔的字符串
@@ -142,7 +142,7 @@ class HttpRequest
     /**
      * @return string
      */
-    private function getRequestRoute()
+    private function getRequestRoute(): string
     {
         if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
             $route = strstr($_SERVER['REQUEST_URI'], '?', true);
@@ -155,7 +155,7 @@ class HttpRequest
     /**
      * @return array
      */
-    private function getRequestHeader()
+    private function getRequestHeader(): array
     {
         $headers = getallheaders();
         return $headers === false ? [] : $headers;

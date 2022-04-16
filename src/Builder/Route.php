@@ -2,6 +2,7 @@
 
 namespace Horseloft\Phalanx\Builder;
 
+use Closure;
 use Horseloft\Phalanx\Handler\Container;
 
 class Route
@@ -45,9 +46,9 @@ class Route
 
     /**
      * @param array $config
-     * @param \Closure $closure
+     * @param Closure $closure
      */
-    public static function group(array $config, \Closure $closure)
+    public static function group(array $config, Closure $closure)
     {
         self::$config = $config;
 
@@ -61,7 +62,7 @@ class Route
      *
      * @return array[]
      */
-    private static function routeBuilder(array $router)
+    private static function routeBuilder(array $router): array
     {
         // 路由前缀
         $prefix = empty(self::$config['prefix']) ? '/' : '/' . trim(self::$config['prefix'], '/') . '/';
@@ -99,7 +100,7 @@ class Route
      *
      * @return array
      */
-    private static function getRouterInterceptor($interceptor)
+    private static function getRouterInterceptor($interceptor): array
     {
         if (empty($interceptor)) {
             $response = [];

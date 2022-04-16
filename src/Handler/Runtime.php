@@ -2,21 +2,24 @@
 
 namespace Horseloft\Phalanx\Handler;
 
+use Exception;
 use Horseloft\Phalanx\Builder\Request;
 use Horseloft\Phalanx\Builder\Response;
+use ReflectionClass;
+use Throwable;
 
 class Runtime
 {
     /**
      * 自定义异常处理
      *
-     * @param \Throwable $e
+     * @param Throwable $e
      *
      * @return void
      */
-    public static function exception(\Throwable $e)
+    public static function exception(Throwable $e)
     {
-        $exceptionClassName = (new \ReflectionClass($e))->getShortName();
+        $exceptionClassName = (new ReflectionClass($e))->getShortName();
         $namespace = Container::getNamespace() . 'Exceptions\\';
 
         // 异常处理类中必须有handle方法
@@ -26,7 +29,7 @@ class Runtime
             } else {
                 $response = call_user_func([$namespace . 'Exception', 'handle'], new Request(), $e);
             }
-        } catch (\Exception $e){
+        } catch (Exception $e){
             // 捕捉回调方法中的异常
         }
 

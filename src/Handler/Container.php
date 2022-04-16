@@ -112,7 +112,7 @@ class Container
     /**
      * @var array
      */
-    private static $requestParamter = [];
+    private static $requestParameter = [];
 
     /**
      * @var array
@@ -469,17 +469,17 @@ class Container
     /**
      * @return array
      */
-    public static function getRequestParamter(): array
+    public static function getRequestParameter(): array
     {
-        return self::$requestParamter;
+        return self::$requestParameter;
     }
 
     /**
-     * @param array $requestParamter
+     * @param array $requestParameter
      */
-    public static function setRequestParamter(array $requestParamter): void
+    public static function setRequestParameter(array $requestParameter): void
     {
-        self::$requestParamter = array_merge(self::$requestParamter, $requestParamter);
+        self::$requestParameter = array_merge(self::$requestParameter, $requestParameter);
     }
 
     /**

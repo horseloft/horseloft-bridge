@@ -1,8 +1,10 @@
 <?php
 namespace Horseloft\Phalanx\Builder;
 
+use Exception;
 use Horseloft\Phalanx\HorseloftPhalanxException;
 use Horseloft\Phalanx\Handler\Container;
+use ReflectionClass;
 
 class FileReader
 {
@@ -54,7 +56,7 @@ class FileReader
                         continue;
                     }
                     require_once $routePath . '/' . $file;
-                } catch (\Exception $e){
+                } catch (Exception $e){
                     continue;
                 }
             }
@@ -136,7 +138,7 @@ class FileReader
                     }
                     Container::setConfig(substr($file, 0, -4), $configure);
 
-                } catch (\Exception $e){
+                } catch (Exception $e){
                     continue;
                 }
             }
@@ -178,7 +180,7 @@ class FileReader
                     }
                     $interceptorName = ucfirst(substr($file, 0, -4));
                     $interceptorClass = $namespace . $interceptorName;
-                    $cls = new \ReflectionClass($interceptorClass);
+                    $cls = new ReflectionClass($interceptorClass);
                     $method = $cls->getMethod('handle');
                     $methodNumber = $method->getNumberOfParameters();
                     if ($methodNumber == 0) {
@@ -208,7 +210,7 @@ class FileReader
                     }
                     $interceptor[$interceptorName] = [$interceptorClass, 'handle'];
 
-                } catch (\Exception $e){
+                } catch (Exception $e){
                     throw new HorseloftPhalanxException($e->getMessage() . PHP_EOL . $e->getTraceAsString());
                 }
             }
@@ -224,7 +226,7 @@ class FileReader
      * @param string $filename
      * @return array
      */
-    private function readIniFile(string $filename)
+    private function readIniFile(string $filename): array
     {
         $iniData = parse_ini_file($filename, true, INI_SCANNER_RAW);
         if ($iniData === false) {

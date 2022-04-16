@@ -14,7 +14,7 @@ class Request
      */
     public function set(string $name, $value) : void
     {
-        Container::setRequestParamter([$name => $value]);
+        Container::setRequestParameter([$name => $value]);
     }
 
     /**
@@ -34,9 +34,9 @@ class Request
      *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
-        return Container::getRequestParamter();
+        return Container::getRequestParameter();
     }
 
     /**
@@ -55,7 +55,7 @@ class Request
      *
      * @return array
      */
-    public function getCompleteHeader()
+    public function getCompleteHeader(): array
     {
         return Container::getRequestHeader();
     }
@@ -76,7 +76,7 @@ class Request
      *
      * @return array
      */
-    public function getCompleteCookie()
+    public function getCompleteCookie(): array
     {
         return Container::getRequestCookie();
     }
@@ -96,7 +96,7 @@ class Request
      *
      * @return string
      */
-    public function getUri()
+    public function getUri(): string
     {
         return Container::getRequestUri();
     }
@@ -106,7 +106,7 @@ class Request
      *
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return Container::getRequestMethod();
     }
@@ -116,7 +116,7 @@ class Request
      *
      * @return string
      */
-    public function getIP()
+    public function getIP(): string
     {
         return Container::getRequestIP();
     }
