@@ -2,7 +2,6 @@
 
 namespace Horseloft\Phalanx\Handler;
 
-use Exception;
 use Horseloft\Phalanx\Builder\Request;
 use Horseloft\Phalanx\Builder\Response;
 use ReflectionClass;
@@ -20,16 +19,17 @@ class Runtime
     public static function exception(Throwable $e)
     {
         $exceptionClassName = (new ReflectionClass($e))->getShortName();
-        $namespace = Container::getNamespace() . 'Exceptions\\';
+        $namespace = Container::getNamespace() . 'Runtime\\';
 
-        // 异常处理类中必须有handle方法
         try {
+            // 自定义异常处理
             if (is_callable([$namespace . $exceptionClassName, 'handle'])) {
                 $response = call_user_func([$namespace . $exceptionClassName, 'handle'], new Request(), $e);
             } else {
+                // 默认异常处理
                 $response = call_user_func([$namespace . 'Exception', 'handle'], new Request(), $e);
             }
-        } catch (Exception $e){
+        } catch (Throwable $e){
             // 捕捉回调方法中的异常
         }
 
@@ -67,9 +67,14 @@ class Runtime
         if (!$e) {
             exit();
         }
+
         $msg = '';
         if (Container::isErrorLog()) {
-            $msg = strstr($e['message'], 'Stack trace:', true);
+            if (strpos($e['message'], 'Stack trace:') === false) {
+                $msg = $e['message'];
+            } else {
+                $msg = strstr($e['message'], 'Stack trace:', true);
+            }
         }
         if (Container::isErrorLogTrace()) {
             $msg = $e['message'];
