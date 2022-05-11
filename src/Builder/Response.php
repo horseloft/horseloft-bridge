@@ -21,6 +21,8 @@ class Response
      */
     public static function return($data)
     {
+        header('Content-Type:application/json; charset=UTF-8');
+
         if (is_array($data) || is_object($data)) {
             return json_encode($data);
         } else {
