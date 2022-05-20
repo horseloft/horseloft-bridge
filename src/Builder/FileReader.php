@@ -195,7 +195,7 @@ class FileReader
                     }
 
                     $params = $method->getParameters();
-                    $paramClass = $params[0]->getClass();
+                    $paramClass = $params[0]->getType();
                     if (is_null($paramClass)) {
                         throw new HorseloftPhalanxException(
                             'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
