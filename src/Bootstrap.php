@@ -16,22 +16,105 @@ class Bootstrap
     private $http;
 
     /**
-     * @var FileReader
+     * @var string
      */
-    private $reader;
+    private $action;
 
+    /**
+     * @param string $root
+     * @param string $namespace
+     */
     public function __construct(string $root, string $namespace = 'Application')
+    {
+        $this->registerErrorAndException();
+
+        $this->registerFileCache($root, $namespace);
+
+        $this->registerRequest();
+
+        $this->corsHandler();
+
+        $this->requestHandler();
+    }
+
+    /**
+     * 执行请求并输出结果
+     */
+    public function run()
+    {
+        $this->http->getActionResponse($this->action);
+    }
+
+    /**
+     * 异常和错误处理并记录错误日志
+     */
+    private function registerErrorAndException()
     {
         error_reporting(0);
 
-        $this->reader = new FileReader($root, $namespace);
+        // 异常处理
+        set_exception_handler([Runtime::class, 'exception']);
 
-        $this->http = new HttpRequest();
-
-        $this->initialize();
+        // 异常、错误处理程序 | 用于默认日志记录
+        register_shutdown_function([Runtime::class, 'shutdown']);
     }
 
-    public function run()
+    /**
+     * ENV文件、配置文件、路由、拦截器加载
+     *
+     * @param $root
+     * @param $namespace
+     */
+    private function registerFileCache($root, $namespace)
+    {
+        // 文件处理
+        $reader = new FileReader($root, $namespace);
+
+        // 读取Env文件到缓存
+        $reader->readAndSetEnv();
+
+        // 读取配置文件到缓存
+        $reader->readSetConfig();
+
+        // 读取路由文件到缓存
+        $reader->readAndSetRoute();
+
+        // 读取拦截器到缓存
+        $reader->readSetInterceptor();
+    }
+
+    /**
+     * request信息加载
+     */
+    private function registerRequest()
+    {
+        $this->http = new HttpRequest();
+        $this->http->readSetRequest();
+    }
+
+    /**
+     * CORS | OPTIONS
+     */
+    private function corsHandler()
+    {
+        if (Container::getRequestMethod() != 'OPTIONS') {
+            return;
+        }
+        $config = Container::getConfig();
+        if (!isset($config['cors']) || !is_array($config['cors'])) {
+            return;
+        }
+
+        foreach ($config['cors'] as $cors) {
+            header($cors);
+        }
+        Response::exit();
+    }
+
+    /**
+     * 请求信息验证处理
+     */
+    private function requestHandler()
     {
         // 日志记录
         $this->http->requestLogRecord();
@@ -48,32 +131,6 @@ class Bootstrap
         if ($interceptor !== true) {
             Response::exit($interceptor);
         }
-
-        // 输出action结果
-        $this->http->getActionResponse($router[$uri]['action']);
-    }
-
-    private function initialize()
-    {
-        // 异常处理
-        set_exception_handler([Runtime::class, 'exception']);
-
-        // 异常、错误处理程序 | 用于默认日志记录
-        register_shutdown_function([Runtime::class, 'shutdown']);
-
-        // 读取Env文件到缓存
-        $this->reader->readAndSetEnv();
-
-        // 请求数据记录到缓存
-        $this->http->readSetRequest();
-
-        // 读取配置文件到缓存
-        $this->reader->readSetConfig();
-
-        // 读取路由文件到缓存
-        $this->reader->readAndSetRoute();
-
-        // 读取拦截器到缓存
-        $this->reader->readSetInterceptor();
+        $this->action = $router[$uri]['action'];
     }
 }

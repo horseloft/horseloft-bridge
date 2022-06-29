@@ -35,7 +35,7 @@ class Response
      *
      * @param $data
      */
-    public static function exit($data)
+    public static function exit($data = null)
     {
         echo self::return($data);
         exit();
