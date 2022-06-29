@@ -101,6 +101,11 @@ class HttpRequest
      */
     public function requestLogRecord()
     {
+        // 仅当 request_log === true 记录日志
+        $envData = Container::getEnv();
+        if (isset($envData['request_log']) && $envData['request_log'] === false) {
+            return;
+        }
         $message = 'IP=' . Container::getRequestIP() .
             '; Route=' . Container::getRequestRoute() .
             '; Method=' . Container::getRequestMethod() .
