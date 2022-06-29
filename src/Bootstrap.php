@@ -97,16 +97,25 @@ class Bootstrap
      */
     private function corsHandler()
     {
+        $config = Container::getConfig();
+        if (!isset($config['cors']) || !is_array($config['cors']) || !isset($config['cors']['allow_origin'])) {
+            return;
+        }
+        header('Access-Control-Allow-Origin:' . $config['cors']['allow_origin']);
+
         if (Container::getRequestMethod() != 'OPTIONS') {
             return;
         }
-        $config = Container::getConfig();
-        if (!isset($config['cors']) || !is_array($config['cors'])) {
-            return;
-        }
-
-        foreach ($config['cors'] as $cors) {
-            header($cors);
+        // 闭包函数
+        $explodeCors = function (string $key) {
+            $keys = explode('_', $key);
+            return ucfirst(current($keys)) . '-' . ucfirst(end($keys));
+        };
+        foreach ($config['cors'] as $key => $cors) {
+            if ($key == 'allow_origin') {
+                continue;
+            }
+            header('Access-Control-' . $explodeCors($key) . ':' . $cors);
         }
         Response::exit();
     }
