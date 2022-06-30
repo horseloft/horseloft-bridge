@@ -2,6 +2,8 @@
 
 namespace Horseloft\Phalanx\Builder;
 
+use Horseloft\Phalanx\Handler\Container;
+
 class Response
 {
     /**
@@ -21,8 +23,12 @@ class Response
      */
     public static function return($data)
     {
-        header('Content-Type:application/json; charset=UTF-8');
-
+        $envData = Container::getEnv();
+        if (!empty($envData['response_content_type'])) {
+            header('Content-Type:' . $envData['response_content_type']);
+        } else {
+            header('Content-Type:application/json; charset=UTF-8');
+        }
         if (is_array($data) || is_object($data)) {
             return json_encode($data);
         } else {
