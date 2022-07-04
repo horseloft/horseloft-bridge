@@ -64,9 +64,6 @@ class Route
      */
     private static function routeBuilder(array $router): array
     {
-        // 路由前缀
-        $prefix = empty(self::$config['prefix']) ? '/' : '/' . trim(self::$config['prefix'], '/') . '/';
-
         // 路由组的命名空间
         $configNamespace = empty(self::$config['namespace'])
             ? ''
@@ -85,8 +82,17 @@ class Route
         // 完整路由的方法的命名空间
         $namespace = Container::getNamespace() . 'Controllers\\' . $configNamespace . $routerNamespace;
 
-        // 路由
-        $uri = $prefix . (empty($router['uri']) ? '' : trim($router['uri'], '/'));
+        // 路由|路由前缀
+        $prefix = empty(self::$config['prefix']) ? '/' : self::$config['prefix'];
+        if (empty($router['uri'])) {
+            $uri = '/' . $prefix;
+        } else {
+            $uri = $prefix . $router['uri'];
+        }
+        $uri = trim(str_replace('//', '/', $uri), '/');
+        if ($uri == '') {
+            $uri = '/';
+        }
 
         // 路由方法
         $action = $namespace . $router['action'];

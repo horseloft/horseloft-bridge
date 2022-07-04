@@ -44,16 +44,37 @@ class LoopEvent
     }
 
     /**
+     * URI
+     *
+     * @return string
+     */
+    public function getActionUri(): string
+    {
+        $uri = trim(Container::getRequestRoute(), '/');
+        if ($uri == '') {
+            return '/';
+        }
+        return $uri;
+    }
+
+    /**
+     * 当前请求的路由组件
+     *
+     * @param string $actionUri
+     *
      * @return array
      */
-    public function getRequestRouter(): array
+    public function getActionRouter(string $actionUri): array
     {
         if (Container::getRequestMethod() === 'GET') {
             $router = Container::getRouterGet();
         } else {
             $router = Container::getRouterPost();
         }
-        return $router;
+        if (!isset($router[$actionUri])) {
+            throw new HorseloftPhalanxException('Request Not Found');
+        }
+        return $router[$actionUri];
     }
 
     /**

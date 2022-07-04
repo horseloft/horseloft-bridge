@@ -125,21 +125,20 @@ class Bootstrap
      */
     private function loopEventAction()
     {
-        // 日志记录
+        // 请求记录
         $this->loopEvent->requestLogRecord();
 
-        // 路由验证
-        $uri = Container::getRequestRoute();
-        $router = $this->loopEvent->getRequestRouter();
-        if (!isset($router[$uri])) {
-            throw new HorseloftPhalanxException('Request Not Found');
-        }
+        // 请求路由
+        $actionUri = $this->loopEvent->getActionUri();
 
-        // 拦截器验证
-        $interceptor = $this->loopEvent->checkInterceptor($router[$uri]['interceptor']);
+        // 路由组件
+        $router = $this->loopEvent->getActionRouter($actionUri);
+
+        // 拦截器
+        $interceptor = $this->loopEvent->checkInterceptor($router['interceptor']);
         if ($interceptor !== true) {
             Response::exit($interceptor);
         }
-        $this->action = $router[$uri]['action'];
+        $this->action = $router['action'];
     }
 }
