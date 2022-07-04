@@ -128,11 +128,8 @@ class Bootstrap
         // 请求记录
         $this->loopEvent->requestLogRecord();
 
-        // 请求路由
-        $actionUri = $this->loopEvent->getActionUri();
-
         // 路由组件
-        $router = $this->loopEvent->getActionRouter($actionUri);
+        $router = $this->loopEvent->getActionRouter();
 
         // 拦截器
         $interceptor = $this->loopEvent->checkInterceptor($router['interceptor']);
