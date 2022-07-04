@@ -40,28 +40,7 @@ class FileReader
      */
     public function readAndSetRoute()
     {
-        $routePath = $this->applicationRoot . 'Route';
-        if (!is_dir($routePath)) {
-            return;
-        }
-        $fileInfo = [];
-        $handle = opendir($routePath);
-        while (false !== $file = readdir($handle)) {
-            if ($file == '.' || $file == '..' || !is_file($routePath . '/' . $file)) {
-                continue;
-            } else {
-                try {
-                    $suffix = substr($file, -4);
-                    if ($suffix == false || $suffix != '.php') {
-                        continue;
-                    }
-                    require_once $routePath . '/' . $file;
-                } catch (Exception $e){
-                    continue;
-                }
-            }
-        }
-        closedir($handle);
+        $this->readProgramFile($this->applicationRoot . 'Route/');
     }
 
     /**
@@ -117,33 +96,11 @@ class FileReader
      */
     public function readSetConfig()
     {
-        $configPath = Container::getConfigPath();
-        if (!is_dir($configPath)) {
-            throw new HorseloftPhalanxException('missing config path');
-        }
+        $data = $this->readProgramFile(Container::getConfigPath());
 
-        $handle = opendir($configPath);
-        while (false !== $file = readdir($handle)) {
-            if ($file == '.' || $file == '..') {
-                continue;
-            } else {
-                try {
-                    $suffix = substr($file, -4);
-                    if ($suffix == false || $suffix != '.php') {
-                        continue;
-                    }
-                    $configure = require_once $configPath . $file;
-                    if (!is_array($configure)) {
-                        continue;
-                    }
-                    Container::setConfig(substr($file, 0, -4), $configure);
-
-                } catch (Exception $e){
-                    continue;
-                }
-            }
+        foreach ($data as $filename => $config) {
+            Container::setConfig($filename, $config);
         }
-        closedir($handle);
     }
 
     /**
@@ -161,63 +118,48 @@ class FileReader
      */
     public function readSetInterceptor()
     {
-        $dir = $this->applicationRoot . 'Application/Interceptor';
-        if (!is_dir($dir)) {
-            return;
-        }
-
         $interceptor = [];
         $namespace = $this->namespace . 'Interceptor\\';
-        $handle = opendir($dir);
-        while (false !== $file = readdir($handle)) {
-            if ($file == '.' || $file == '..') {
-                continue;
-            } else {
-                try {
-                    $suffix = substr($file, -4);
-                    if ($suffix == false || $suffix != '.php') {
-                        continue;
-                    }
-                    $interceptorName = ucfirst(substr($file, 0, -4));
-                    $interceptorClass = $namespace . $interceptorName;
-                    $cls = new ReflectionClass($interceptorClass);
-                    $method = $cls->getMethod('handle');
-                    $methodNumber = $method->getNumberOfParameters();
-                    if ($methodNumber == 0) {
-                        throw new HorseloftPhalanxException(
-                            'Interceptor[' . $interceptorName . '->handle] missing parameter: Request'
-                        );
-                    }
-                    if ($methodNumber > 1) {
-                        throw new HorseloftPhalanxException(
-                            'Interceptor[' . $interceptorName . '->handle] allow only a [Request] type parameter'
-                        );
-                    }
+        $data = $this->readProgramFile($this->applicationRoot . 'Application/Interceptor/');
 
-                    $params = $method->getParameters();
-                    $paramClass = $params[0]->getType();
-                    if (is_null($paramClass)) {
-                        throw new HorseloftPhalanxException(
-                            'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
-                        );
-                    }
-
-                    $paramClassName = $paramClass->getName();
-                    if ($paramClassName != 'Horseloft\Phalanx\Builder\Request') {
-                        throw new HorseloftPhalanxException(
-                            'Interceptor[' . $interceptorName . '->handle] first parameter must [Request]'
-                        );
-                    }
-                    $interceptor[$interceptorName] = [$interceptorClass, 'handle'];
-
-                } catch (Exception $e){
-                    throw new HorseloftPhalanxException($e->getMessage() . PHP_EOL . $e->getTraceAsString());
+        foreach ($data as $filename => $inspector) {
+            try {
+                $interceptorClass = $namespace . $filename;
+                $cls = new ReflectionClass($interceptorClass);
+                $method = $cls->getMethod('handle');
+                $methodNumber = $method->getNumberOfParameters();
+                if ($methodNumber == 0) {
+                    throw new HorseloftPhalanxException(
+                        'Interceptor[' . $filename . '->handle] missing parameter: Request'
+                    );
                 }
+                if ($methodNumber > 1) {
+                    throw new HorseloftPhalanxException(
+                        'Interceptor[' . $filename . '->handle] allow only a [Request] type parameter'
+                    );
+                }
+
+                $params = $method->getParameters();
+                $paramClass = $params[0]->getType();
+                if (is_null($paramClass)) {
+                    throw new HorseloftPhalanxException(
+                        'Interceptor[' . $filename . '->handle] first parameter must [Request]'
+                    );
+                }
+
+                $paramClassName = $paramClass->getName();
+                if ($paramClassName != 'Horseloft\Phalanx\Builder\Request') {
+                    throw new HorseloftPhalanxException(
+                        'Interceptor[' . $filename . '->handle] first parameter must [Request]'
+                    );
+                }
+                $interceptor[$filename] = [$interceptorClass, 'handle'];
+
+            } catch (Exception $e){
+                throw new HorseloftPhalanxException($e->getMessage() . PHP_EOL . $e->getTraceAsString());
             }
         }
         Container::setInterceptor($interceptor);
-        closedir($handle);
-        unset($interceptor);
     }
 
     /**
@@ -277,5 +219,39 @@ class FileReader
         } else {
             return $value;
         }
+    }
+
+    /**
+     * 读取文件内容
+     *
+     * @param string $path
+     * @return array
+     */
+    private function readProgramFile(string $path): array
+    {
+        if (!is_dir($path)) {
+            throw new HorseloftPhalanxException('missing file path');
+        }
+
+        $response = [];
+        $handle = opendir($path);
+        while (false !== $file = readdir($handle)) {
+            if ($file == '.' || $file == '..' || !is_file($path . $file)) {
+                continue;
+            } else {
+                try {
+                    $pathInfo = pathinfo($file);
+                    if ($pathInfo['extension'] != 'php') {
+                        continue;
+                    }
+                    // 生成以文件名为下标的数组
+                    $response[$pathInfo['filename']] = require_once $path . $file;
+                } catch (Exception $e){
+                    continue;
+                }
+            }
+        }
+        closedir($handle);
+        return $response;
     }
 }
