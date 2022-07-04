@@ -52,7 +52,7 @@ class Route
     {
         self::$config = $config;
 
-        $closure(1);
+        $closure();
 
         self::$config = [];
     }
