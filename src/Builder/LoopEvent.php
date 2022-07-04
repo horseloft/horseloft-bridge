@@ -2,11 +2,11 @@
 
 namespace Horseloft\Phalanx\Builder;
 
-use Horseloft\Phalanx\HorseloftPhalanxException;
 use Horseloft\Phalanx\Handler\Container;
 use Horseloft\Phalanx\Handler\Logger;
+use Horseloft\Phalanx\HorseloftPhalanxException;
 
-class HttpRequest
+class LoopEvent
 {
     public function readSetRequest() : void
     {

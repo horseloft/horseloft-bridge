@@ -3,7 +3,7 @@
 namespace Horseloft\Phalanx;
 
 use Horseloft\Phalanx\Builder\FileReader;
-use Horseloft\Phalanx\Builder\HttpRequest;
+use Horseloft\Phalanx\Builder\LoopEvent;
 use Horseloft\Phalanx\Builder\Response;
 use Horseloft\Phalanx\Handler\Container;
 use Horseloft\Phalanx\Handler\Runtime;
@@ -11,9 +11,9 @@ use Horseloft\Phalanx\Handler\Runtime;
 class Bootstrap
 {
     /**
-     * @var HttpRequest
+     * @var LoopEvent
      */
-    private $http;
+    private $loopEvent;
 
     /**
      * @var string
@@ -30,11 +30,11 @@ class Bootstrap
 
         $this->registerFileCache($root, $namespace);
 
-        $this->registerRequest();
+        $this->registerLoopEvent();
 
         $this->corsHandler();
 
-        $this->requestHandler();
+        $this->loopEventAction();
     }
 
     /**
@@ -42,7 +42,7 @@ class Bootstrap
      */
     public function run()
     {
-        $this->http->getActionResponse($this->action);
+        $this->loopEvent->getActionResponse($this->action);
     }
 
     /**
@@ -84,15 +84,6 @@ class Bootstrap
     }
 
     /**
-     * request信息加载
-     */
-    private function registerRequest()
-    {
-        $this->http = new HttpRequest();
-        $this->http->readSetRequest();
-    }
-
-    /**
      * CORS | OPTIONS
      */
     private function corsHandler()
@@ -121,22 +112,31 @@ class Bootstrap
     }
 
     /**
+     * request信息加载
+     */
+    private function registerLoopEvent()
+    {
+        $this->loopEvent = new LoopEvent();
+        $this->loopEvent->readSetRequest();
+    }
+
+    /**
      * 请求信息验证处理
      */
-    private function requestHandler()
+    private function loopEventAction()
     {
         // 日志记录
-        $this->http->requestLogRecord();
+        $this->loopEvent->requestLogRecord();
 
         // 路由验证
         $uri = Container::getRequestRoute();
-        $router = $this->http->getRequestRouter();
+        $router = $this->loopEvent->getRequestRouter();
         if (!isset($router[$uri])) {
             throw new HorseloftPhalanxException('Request Not Found');
         }
 
         // 拦截器验证
-        $interceptor = $this->http->checkInterceptor($router[$uri]['interceptor']);
+        $interceptor = $this->loopEvent->checkInterceptor($router[$uri]['interceptor']);
         if ($interceptor !== true) {
             Response::exit($interceptor);
         }
