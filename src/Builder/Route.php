@@ -83,16 +83,9 @@ class Route
         $namespace = Container::getNamespace() . 'Controllers\\' . $configNamespace . $routerNamespace;
 
         // 路由|路由前缀
-        $prefix = empty(self::$config['prefix']) ? '/' : self::$config['prefix'];
-        if (empty($router['uri'])) {
-            $uri = '/' . $prefix;
-        } else {
-            $uri = $prefix . $router['uri'];
-        }
-        $uri = trim(str_replace('//', '/', $uri), '/');
-        if ($uri == '') {
-            $uri = '/';
-        }
+        $routerPrefix = empty(self::$config['prefix']) ? '' : trim(self::$config['prefix'], '/');
+        $routerUri = empty($router['uri']) ? '' : trim($router['uri'], '/');
+        $uri = $routerPrefix . '/' . $routerUri;
 
         // 路由方法
         $action = $namespace . $router['action'];
