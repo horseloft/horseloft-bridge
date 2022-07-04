@@ -114,7 +114,7 @@ class Route
 
         $result = [];
         foreach (array_unique($response) as $name) {
-            $result[] = ucfirst($name). 'Interceptor';
+            $result[] = ucfirst($name);
         }
         return $result;
     }

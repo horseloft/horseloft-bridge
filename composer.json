@@ -15,7 +15,10 @@
   "autoload": {
     "psr-4": {
       "Horseloft\\Phalanx\\": "src"
-    }
+    },
+    "files": [
+      "src/Functions.php"
+    ]
   },
   "license": "MIT"
 }
