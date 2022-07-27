@@ -47,7 +47,6 @@ class Logger
         if ($filename == '') {
             $filename = (($level == '') ? '' : $level . '-') . Container::getLogFilename();
         }
-        $header = 'date=' . date('Y-m-d H:i:s') . '; ';
-        file_put_contents(Container::getLogPath() . $filename, $header . $message . "\n", FILE_APPEND);
+        file_put_contents(Container::getLogPath() . $filename, $message . "\n", FILE_APPEND);
     }
 }

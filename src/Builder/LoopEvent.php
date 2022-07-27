@@ -114,17 +114,54 @@ class LoopEvent
      */
     public function requestLogRecord()
     {
-        // 仅当 request_log === true 记录日志
-        $envData = Container::getEnv();
-        if (isset($envData['request_log']) && $envData['request_log'] === false) {
+        $fields = Container::getRequestLogField();
+        if (Container::isRequestLog() === false || empty($fields)) {
             return;
         }
-        $message = 'IP=' . Container::getRequestIP() .
-            '; Route=' . Container::getRequestRoute() .
-            '; Method=' . Container::getRequestMethod() .
-            '; Parameters=' . json_encode(Container::getRequestParameter()) .
-            '; User-Agent=' . Container::getRequestUserAgent();
+        $exclude = Container::getRequestLogExclude();
+        $message = 'date=' . date('Y-m-d H:i:s') . '; ' .
+            'ip=' . Container::getRequestIP() .
+            '; route=' . Container::getRequestRoute() .
+            '; method=' . Container::getRequestMethod();
+
+        foreach ($fields as $field) {
+            switch($field) {
+                case 'parameter':
+                    $message .= '; parameter=' . $this->requestFilter($exclude, 'parameter', Container::getRequestParameter());
+                    break;
+                case 'session':
+                    $message .= '; session=' . $this->requestFilter($exclude, 'session', Container::getRequestSession());
+                    break;
+                case 'cookie':
+                    $message .= '; cookie=' . $this->requestFilter($exclude, 'cookie', Container::getRequestCookie());
+                    break;
+                case 'header':
+                    $message .= '; header=' . $this->requestFilter($exclude, 'header', Container::getRequestHeader());
+                    break;
+            }
+        }
+        $message .= '; user-agent=' . Container::getRequestUserAgent();
         Logger::info($message);
+    }
+
+    /**
+     * 日志参数过滤
+     *
+     * @param array $exclude
+     * @param string $field
+     * @param array $params
+     * @return string
+     */
+    private function requestFilter(array $exclude, string $field, array $params): string
+    {
+        if (isset($exclude[$field]) && !empty($exclude[$field]) && is_array($exclude[$field])) {
+            foreach ($params as $key => $param) {
+                if (in_array($key, $exclude[$field])) {
+                    unset($params[$key]);
+                }
+            }
+        }
+        return json_encode($params);
     }
 
     /**

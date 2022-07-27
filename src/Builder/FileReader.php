@@ -55,38 +55,73 @@ class FileReader
             throw new HorseloftPhalanxException('missing env file');
         }
 
-        // debug
-        if ($env['debug'] === true) {
-            Container::setDebug(true);
-            error_reporting(-1);
-        }
-
-        // 错误信息是否写入日志【默认值true】
-        if ($env['error_log'] === false) {
-            Container::setErrorLog(false);
-        }
-
-        // 错误信息的追踪信息是否写入日志【默认值true】
-        if ($env['error_log_trace'] === false) {
-            Container::setErrorLogTrace(false);
-        }
-
-        // 日志目录、日志文件
-        if (is_dir($env['log_path'])) {
-            Container::setLogPath('/' . trim($env['log_path'], '/') . '/');
-        } else {
-            if (!is_dir($this->applicationRoot . 'Log')) {
-                throw new HorseloftPhalanxException('missing log path');
-            }
-            Container::setLogPath($this->applicationRoot . 'Log/');
-        }
-
         // 配置文件目录
         Container::setConfigPath($this->applicationRoot . 'Config/');
 
         // env.ini文件内容以数组格式保留
         Container::setEnv($env);
         unset($env);
+    }
+
+    /**
+     * --------------------------------------------------------------------------
+     *  设置服务基础配置
+     * --------------------------------------------------------------------------
+     */
+    public function setFramework()
+    {
+        $config = Container::getConfig();
+        if (!isset($config['app'])) {
+            throw new HorseloftPhalanxException('missing config: app');
+        }
+
+        // 日志格式
+        if (in_array($config['app']['log_type'], ['string', 'json'])) {
+            Container::setLogType($config['app']['log_type']);
+        } else {
+            Container::setLogType('string');
+        }
+
+        // debug
+        if ($config['app']['debug'] === true) {
+            Container::setDebug(true);
+            error_reporting(-1);
+        }
+
+        // 请求信息是否写入日志【默认值true】
+        if ($config['app']['log_request'] === false) {
+            Container::setRequestLog(false);
+        }
+
+        // 错误信息是否写入日志【默认值true】
+        if ($config['app']['log_error'] === false) {
+            Container::setErrorLog(false);
+        }
+
+        // 错误信息的追踪信息是否写入日志【默认值true】
+        if ($config['app']['log_error_trace'] === false) {
+            Container::setErrorLogTrace(false);
+        }
+
+        // 日志记录的字段
+        if (is_array($config['app']['log_request_field'])) {
+            Container::setRequestLogField($config['app']['log_request_field']);
+        }
+
+        // 日志记录排除的字段
+        if (is_array($config['app']['log_request_exclude'])) {
+            Container::setRequestLogExclude($config['app']['log_request_exclude']);
+        }
+
+        // 日志目录、日志文件
+        if (is_dir($config['app']['log_path'])) {
+            Container::setLogPath('/' . trim($config['app']['log_path'], '/') . '/');
+        } else {
+            if (!is_dir($this->applicationRoot . 'Log')) {
+                throw new HorseloftPhalanxException('missing log path');
+            }
+            Container::setLogPath($this->applicationRoot . 'Log/');
+        }
     }
 
     /**

@@ -76,6 +76,9 @@ class Bootstrap
         // 读取配置文件到缓存
         $reader->readSetConfig();
 
+        // 服务基础配置
+        $reader->setFramework();
+
         // 读取路由文件到缓存
         $reader->readAndSetRoute();
 

@@ -22,6 +22,11 @@ class Container
     /**
      * @var bool
      */
+    private static $requestLog = true;
+
+    /**
+     * @var bool
+     */
     private static $errorLog = true;
 
     /**
@@ -33,6 +38,11 @@ class Container
      * @var string
      */
     private static $env = [];
+
+    /**
+     * @var string
+     */
+    private static $logType = 'string';
 
     /**
      * @var string
@@ -130,6 +140,16 @@ class Container
     private static $interceptor = [];
 
     /**
+     * @var array
+     */
+    private static $requestLogField = [];
+
+    /**
+     * @var array
+     */
+    private static $requestLogExclude = [];
+
+    /**
      * @return string
      */
     public static function getNamespace(): string
@@ -180,6 +200,22 @@ class Container
     /**
      * @return bool
      */
+    public static function isRequestLog(): bool
+    {
+        return self::$requestLog;
+    }
+
+    /**
+     * @param bool $requestLog
+     */
+    public static function setRequestLog(bool $requestLog): void
+    {
+        self::$requestLog = $requestLog;
+    }
+
+    /**
+     * @return bool
+     */
     public static function isErrorLog(): bool
     {
         return self::$errorLog;
@@ -223,6 +259,22 @@ class Container
     public static function setEnv(array $env): void
     {
         self::$env = $env;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getLogType(): string
+    {
+        return self::$logType;
+    }
+
+    /**
+     * @param string $logType
+     */
+    public static function setLogType(string $logType): void
+    {
+        self::$logType = $logType;
     }
 
     /**
@@ -528,5 +580,37 @@ class Container
     public static function setInterceptor(array $interceptor): void
     {
         self::$interceptor = $interceptor;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRequestLogField(): array
+    {
+        return self::$requestLogField;
+    }
+
+    /**
+     * @param array $requestLogField
+     */
+    public static function setRequestLogField(array $requestLogField): void
+    {
+        self::$requestLogField = $requestLogField;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRequestLogExclude(): array
+    {
+        return self::$requestLogExclude;
+    }
+
+    /**
+     * @param array $requestLogExclude
+     */
+    public static function setRequestLogExclude(array $requestLogExclude): void
+    {
+        self::$requestLogExclude = $requestLogExclude;
     }
 }
