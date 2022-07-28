@@ -2,9 +2,10 @@
 
 namespace Horseloft\Phalanx;
 
+use RuntimeException;
 use Throwable;
 
-class HorseloftPhalanxException extends \RuntimeException
+class RequestNotFoundException extends RuntimeException
 {
     public function __construct($message = "", $code = 4004, Throwable $previous = null)
     {

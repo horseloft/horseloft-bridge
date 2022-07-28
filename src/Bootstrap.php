@@ -23,6 +23,7 @@ class Bootstrap
     /**
      * @param string $root
      * @param string $namespace
+     * @throws \ReflectionException
      */
     public function __construct(string $root, string $namespace = 'Application')
     {
@@ -64,6 +65,7 @@ class Bootstrap
      *
      * @param $root
      * @param $namespace
+     * @throws \ReflectionException
      */
     private function registerFileCache($root, $namespace)
     {

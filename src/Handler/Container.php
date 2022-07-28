@@ -32,7 +32,7 @@ class Container
     /**
      * @var bool
      */
-    private static $errorLogTrace = false;
+    private static $errorLogTrace = true;
 
     /**
      * @var string
