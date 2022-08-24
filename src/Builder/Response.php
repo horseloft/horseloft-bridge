@@ -2,72 +2,38 @@
 
 namespace Horseloft\Phalanx\Builder;
 
-use Horseloft\Phalanx\Handler\Container;
-
 class Response
 {
     /**
-     * 数据数据
-     *
-     * @param $data
+     * header响应内容格式
+     * @var string
      */
-    public static function echo($data)
+    private static $contentType;
+
+    /**
+     * 设置响应内容格式
+     *
+     * @param string $contentType
+     */
+    public static function setContentType(string $contentType = 'application/json; charset=UTF-8')
     {
-        echo self::return($data);
+        self::$contentType = $contentType;
     }
 
     /**
-     * @param $data
+     * 内容输出
      *
-     * @return false|mixed|string
+     * @param $data
      */
-    public static function return($data)
+    public static function output($data)
     {
-        $envData = Container::getEnv();
-        if (!empty($envData['response_content_type'])) {
-            header('Content-Type:' . $envData['response_content_type']);
+        header('Content-Type:' . self::$contentType);
+
+        if (is_string($data) || is_numeric($data)) {
+            echo $data;
         } else {
-            header('Content-Type:application/json; charset=UTF-8');
+            echo json_encode($data);
         }
-        if (is_array($data) || is_object($data)) {
-            return json_encode($data);
-        } else {
-            return $data;
-        }
-    }
-
-    /**
-     * 输出数据并终止程序
-     *
-     * @param $data
-     */
-    public static function exit($data = null)
-    {
-        echo self::return($data);
-        exit();
-    }
-
-    /**
-     * 格式化打印数据并终止程序
-     *
-     * @param $data
-     */
-    public static function format($data)
-    {
-        echo "<pre>";
-        print_r($data);
-        echo "<pre/>";
-        exit();
-    }
-
-    /**
-     * 打印数据并终止程序
-     *
-     * @param $data
-     */
-    public static function print($data)
-    {
-        print_r($data);
         exit();
     }
 }
