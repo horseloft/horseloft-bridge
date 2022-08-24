@@ -52,7 +52,7 @@ class Container
     /**
      * @var string
      */
-    private static $logFilename = 'horseloft.log';
+    private static $logFilename = 'horseloft';
 
     /**
      * @var string

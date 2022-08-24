@@ -45,8 +45,20 @@ class Logger
     private static function write(string $message, string $level, string $filename)
     {
         if ($filename == '') {
-            $filename = (($level == '') ? '' : $level . '-') . Container::getLogFilename();
+            $filename = Container::getLogFilename() . (($level == '') ? '' : $level . '-');
         }
-        file_put_contents(Container::getLogPath() . $filename, $message . "\n", FILE_APPEND);
+        $file = Container::getLogPath() . $filename . '.log';
+
+        $inc = 0;
+        while (true)
+        {
+            $inc++;
+            // 100M
+            if (!is_file($file) || filesize($file) < 104857600) {
+                break;
+            }
+            $file = Container::getLogPath() . $filename . '-' . $inc . '.log';
+        }
+        file_put_contents($file, $message . "\n", FILE_APPEND);
     }
 }
