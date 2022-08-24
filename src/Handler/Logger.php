@@ -45,7 +45,7 @@ class Logger
     private static function write(string $message, string $level, string $filename)
     {
         if ($filename == '') {
-            $filename = Container::getLogFilename() . (($level == '') ? '' : $level . '-');
+            $filename = Container::getLogFilename() . (($level == '') ? '' : '-' . $level);
         }
         $file = Container::getLogPath() . $filename . '.log';
 
