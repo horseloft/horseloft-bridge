@@ -85,7 +85,7 @@ class Route
         // 路由|路由前缀
         $routerPrefix = empty(self::$config['prefix']) ? '' : trim(self::$config['prefix'], '/');
         $routerUri = empty($router['uri']) ? '' : trim($router['uri'], '/');
-        $uri = $routerPrefix . '/' . $routerUri;
+        $uri = trim($routerPrefix . '/' . $routerUri, '/');
 
         // 路由方法
         $action = $namespace . $router['action'];
