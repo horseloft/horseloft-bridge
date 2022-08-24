@@ -115,9 +115,8 @@ class Bootstrap
             }
         }
         if (Container::getRequestMethod() == 'OPTIONS') {
-            Response::exit();
+            exit();
         }
-        return;
     }
 
     /**
@@ -163,7 +162,7 @@ class Bootstrap
         // 拦截器
         $interceptor = $this->loopEvent->checkInterceptor($router['interceptor']);
         if ($interceptor !== true) {
-            Response::exit($interceptor);
+            Response::output($interceptor);
         }
         $this->action = $router['action'];
     }
