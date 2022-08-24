@@ -141,7 +141,6 @@ class LoopEvent
                     break;
             }
         }
-        $message .= '; user-agent=' . Container::getRequestUserAgent();
         Logger::info($message);
     }
 
