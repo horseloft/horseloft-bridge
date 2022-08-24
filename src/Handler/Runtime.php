@@ -100,7 +100,7 @@ class Runtime
         }
 
         // 错误追踪信息
-        if (Container::isErrorLogTrace()) {
+        if (Container::isErrorTraceLog()) {
             $msg = $trace;
         }
 

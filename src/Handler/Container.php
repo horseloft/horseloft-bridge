@@ -32,7 +32,7 @@ class Container
     /**
      * @var bool
      */
-    private static $errorLogTrace = true;
+    private static $errorTraceLog = true;
 
     /**
      * @var string
@@ -232,17 +232,17 @@ class Container
     /**
      * @return bool
      */
-    public static function isErrorLogTrace(): bool
+    public static function isErrorTraceLog(): bool
     {
-        return self::$errorLogTrace;
+        return self::$errorTraceLog;
     }
 
     /**
-     * @param bool $errorLogTrace
+     * @param bool $errorTraceLog
      */
-    public static function setErrorLogTrace(bool $errorLogTrace): void
+    public static function setErrorTraceLog(bool $errorTraceLog): void
     {
-        self::$errorLogTrace = $errorLogTrace;
+        self::$errorTraceLog = $errorTraceLog;
     }
 
     /**

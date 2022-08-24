@@ -91,28 +91,28 @@ class FileReader
         }
 
         // 请求信息是否写入日志【默认值true】
-        if ($config['app']['log_request'] === false) {
+        if ($config['app']['request_log'] === false) {
             Container::setRequestLog(false);
         }
 
         // 错误信息是否写入日志【默认值true】
-        if ($config['app']['log_error'] === false) {
+        if ($config['app']['error_log'] === false) {
             Container::setErrorLog(false);
         }
 
         // 错误信息的追踪信息是否写入日志【默认值true】
-        if ($config['app']['log_error_trace'] === false) {
-            Container::setErrorLogTrace(false);
+        if ($config['app']['error_trace_log'] === false) {
+            Container::setErrorTraceLog(false);
         }
 
         // 日志记录的字段
-        if (is_array($config['app']['log_request_field'])) {
-            Container::setRequestLogField($config['app']['log_request_field']);
+        if (is_array($config['app']['request_log_fields'])) {
+            Container::setRequestLogField($config['app']['request_log_fields']);
         }
 
         // 日志记录排除的字段
-        if (is_array($config['app']['log_request_exclude'])) {
-            Container::setRequestLogExclude($config['app']['log_request_exclude']);
+        if (is_array($config['app']['request_log_exclude'])) {
+            Container::setRequestLogExclude($config['app']['request_log_exclude']);
         }
 
         // 日志目录、日志文件
