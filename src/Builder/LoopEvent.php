@@ -5,7 +5,6 @@ namespace Horseloft\Phalanx\Builder;
 use Horseloft\Phalanx\Handler\Container;
 use Horseloft\Phalanx\Handler\Logger;
 use Horseloft\Phalanx\InterceptorException;
-use Horseloft\Phalanx\PhalanxException;
 use Horseloft\Phalanx\RequestNotFoundException;
 
 class LoopEvent
@@ -67,7 +66,7 @@ class LoopEvent
         if (isset($router[$uri])) {
             return $router[$uri];
         }
-        throw new RequestNotFoundException('Request [' . $uri . '] Not Found');
+        throw new RequestNotFoundException('request [' . $uri . '] not found');
     }
 
     /**
@@ -89,7 +88,7 @@ class LoopEvent
             }
             $response = call_user_func($allInterceptor[$interceptor], new Request());
             if ($response !== true) {
-                return Response::return($response);
+                return $response;
             }
         }
         return true;
@@ -103,11 +102,11 @@ class LoopEvent
         Container::setRequestAction($action);
         // action验证
         if (!is_callable($action)) {
-            throw new PhalanxException('Action Not Found');
+            throw new RequestNotFoundException('request [' . Container::getRequestUri() . '] action not found');
         }
 
         // 执行请求并输出结果
-        Response::exit(call_user_func($action, new Request()));
+        Response::output(call_user_func($action, new Request()));
     }
 
     /**

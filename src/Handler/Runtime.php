@@ -111,12 +111,12 @@ class Runtime
 
         // 自定义异常信息输出
         if (!is_null($response)) {
-            Response::exit($response);
+            Response::output($response);
         }
 
         // 错误输出
         if (Container::isDebug()) {
-            Response::echo($msg);
+            echo $msg;
         }
     }
 }
