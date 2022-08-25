@@ -18,6 +18,7 @@ class Runtime
      */
     public static function exception(Throwable $e)
     {
+        error_clear_last();
         $exceptionClassName = (new ReflectionClass($e))->getShortName();
         $namespace = Container::getNamespace() . 'Runtime\\';
 
@@ -35,9 +36,6 @@ class Runtime
         }
         $message = $exceptionClassName . ': ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine();
         $trace = $message . PHP_EOL . "Stack trace:" . PHP_EOL . $e->getTraceAsString();
-
-        // 捕捉异常之后，清除错误信息
-        error_clear_last();
 
         // 异常信息记录和输出
         self::messageAction($message, $trace, $response);
@@ -116,7 +114,8 @@ class Runtime
 
         // 错误输出
         if (Container::isDebug()) {
-            echo $msg;
+            Response::setContentType('text/html; charset=UTF-8');
+            Response::output($msg);
         }
     }
 }
