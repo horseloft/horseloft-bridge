@@ -8,7 +8,7 @@ class Response
      * header响应内容格式
      * @var string
      */
-    private static $contentType;
+    private static $contentType = 'application/json; charset=UTF-8';
 
     /**
      * 设置响应内容格式
