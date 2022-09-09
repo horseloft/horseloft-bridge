@@ -4,6 +4,7 @@ namespace Horseloft\Phalanx;
 
 use Horseloft\Phalanx\Builder\FileReader;
 use Horseloft\Phalanx\Builder\LoopEvent;
+use Horseloft\Phalanx\Builder\Request;
 use Horseloft\Phalanx\Builder\Response;
 use Horseloft\Phalanx\Handler\Container;
 use Horseloft\Phalanx\Handler\Runtime;
@@ -23,27 +24,41 @@ class Bootstrap
     /**
      * @param string $root
      * @param string $namespace
+     * @param bool $isCommand
      * @throws \ReflectionException
      */
-    public function __construct(string $root, string $namespace = 'Application')
+    public function __construct(string $root, string $namespace = 'Application', bool $isCommand = false)
     {
         $this->registerErrorAndException();
 
-        $this->registerFileCache($root, $namespace);
+        $this->registerFileCache($root, $namespace, $isCommand);
+    }
 
+    /**
+     * 启动HTTP请求请求并输出结果
+     */
+    public function run()
+    {
         $this->registerLoopEvent();
 
         $this->corsHandler();
 
         $this->loopEventAction();
+
+        $this->loopEvent->getActionResponse($this->action);
     }
 
     /**
-     * 执行请求并输出结果
+     * 执行命令行操作
      */
-    public function run()
+    public function command()
     {
-        $this->loopEvent->getActionResponse($this->action);
+        $callable = $this->getCommandCallable($_SERVER['argv']);
+        $argument = $this->getCommandArgument($_SERVER['argv']);
+
+        Container::setRequestParameter($argument);
+
+        call_user_func($callable, new Request());
     }
 
     /**
@@ -65,9 +80,10 @@ class Bootstrap
      *
      * @param $root
      * @param $namespace
+     * @param $isCommand
      * @throws \ReflectionException
      */
-    private function registerFileCache($root, $namespace)
+    private function registerFileCache($root, $namespace, $isCommand)
     {
         // 文件处理
         $reader = new FileReader($root, $namespace);
@@ -82,10 +98,10 @@ class Bootstrap
         $reader->setFramework();
 
         // 读取路由文件到缓存
-        $reader->readAndSetRoute();
+        $reader->readAndSetRoute($isCommand);
 
         // 读取拦截器到缓存
-        $reader->readSetInterceptor();
+        $reader->readSetInterceptor($isCommand);
     }
 
     /**
@@ -165,5 +181,57 @@ class Bootstrap
             Response::output($interceptor);
         }
         $this->action = $router['action'];
+    }
+
+    /**
+     * 命令行参数校验
+     *
+     * @param array $args
+     * @return callable|void
+     */
+    private function getCommandCallable(array $args)
+    {
+        if (!isset($args[1])) {
+            die('命令command缺少可执行参数');
+        }
+        $commandList = config('command', []);
+        if (empty($commandList)) {
+            die('command配置缺失');
+        }
+        if (!isset($commandList[$args[1]])) {
+            die('命令command ' . $args[1] . ' 不存在');
+        }
+        if (!is_callable($commandList[$args[1]])) {
+            die('命令command ' . $args[1] . ' 不是一个有效的回调方法');
+        }
+        return $commandList[$args[1]];
+    }
+
+    /**
+     * 获取命令行参数
+     *
+     * 参考格式：php command xxx name=tom,lily age=12 other=old=new
+     *
+     * 参数结果：[
+     *  name => tom,lily,
+     *  age => 12,
+     *  other => old=new
+     * ]
+     *
+     * @param array $args
+     * @return array
+     */
+    private function getCommandArgument(array $args): array
+    {
+        $argument = [];
+        $params = array_slice($args, 2);
+        foreach ($params as $param) {
+            $key = mb_strstr($param, '=', true);
+            if ($key == false) {
+                continue;
+            }
+            $argument[$key] = ltrim(mb_strstr($param, '='), '=');
+        }
+        return $argument;
     }
 }

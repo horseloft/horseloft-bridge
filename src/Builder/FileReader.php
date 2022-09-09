@@ -40,8 +40,11 @@ class FileReader
      *  读取路由配置
      * --------------------------------------------------------------------------
      */
-    public function readAndSetRoute()
+    public function readAndSetRoute(bool $isCommand)
     {
+        if ($isCommand) {
+            return;
+        }
         $this->readProgramFile($this->applicationRoot . 'Route/');
     }
 
@@ -155,8 +158,11 @@ class FileReader
      *
      * @throws ReflectionException
      */
-    public function readSetInterceptor()
+    public function readSetInterceptor(bool $isCommand)
     {
+        if ($isCommand) {
+            return;
+        }
         $interceptor = [];
         $namespace = $this->namespace . 'Interceptor\\';
         $data = $this->readProgramFile($this->applicationRoot . 'Application/Interceptor/');
