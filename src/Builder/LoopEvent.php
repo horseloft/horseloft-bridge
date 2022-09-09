@@ -9,7 +9,7 @@ use Horseloft\Phalanx\RequestNotFoundException;
 
 class LoopEvent
 {
-    public function readSetRequest() : void
+    public function readSetRequest(): void
     {
         // request session
         if (isset($_SESSION)) {
