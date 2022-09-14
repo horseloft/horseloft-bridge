@@ -7,6 +7,7 @@ use Horseloft\Phalanx\Builder\LoopEvent;
 use Horseloft\Phalanx\Builder\Request;
 use Horseloft\Phalanx\Builder\Response;
 use Horseloft\Phalanx\Handler\Container;
+use Horseloft\Phalanx\Handler\Crontab;
 use Horseloft\Phalanx\Handler\Runtime;
 
 class Bootstrap
@@ -59,6 +60,58 @@ class Bootstrap
         Container::setRequestParameter($argument);
 
         call_user_func($callable, new Request());
+    }
+
+    /**
+     * 启动定时任务
+     */
+    public function crontab()
+    {
+        $crontabList = config('crontab', []);
+        if (empty($crontabList)) {
+            return;
+        }
+        $observer = true;
+        $runningWorker = [];
+        $crontabHandle = new Crontab();
+
+        while (true)
+        {
+            sleep(1);
+            if (date('s') > $crontabHandle->enableTime) {
+                $runningWorker = []; // 运行中的任务
+                $observer = true; // 允许进程检测
+                continue;
+            }
+            foreach ($crontabList as $name => $crontab) {
+                // 本次已执行过
+                if (array_key_exists($name, $runningWorker) || $crontabHandle->isInvalidCrontab($crontab)) {
+                    break;
+                }
+
+                // 未到定时任务的执行时间
+                $timeCommand = $crontabHandle->commandResolve($crontab['command']);
+                if (empty($timeCommand) || $crontabHandle->isInvalidRunTime($timeCommand)) {
+                    continue;
+                }
+
+                // 创建进程并执行任务
+                $runningWorker[$name] = $name;
+                $args = empty($crontab['args']) ? [] : $crontab['args'];
+                $crontabHandle->createProcess($name, $crontab['callback'], $args);
+            }
+
+            // 没有任务执行，未创建进程
+            if (empty($runningWorker)) {
+                continue;
+            }
+
+            // 任务检测
+            if ($observer) {
+                $observer = false;
+                $crontabHandle->processObserver();
+            }
+        }
     }
 
     /**
