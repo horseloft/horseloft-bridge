@@ -27,7 +27,9 @@ class Response
      */
     public static function output($data)
     {
-        header('Content-Type:' . self::$contentType);
+        if (PHP_SAPI != 'cli') {
+            header('Content-Type:' . self::$contentType);
+        }
 
         if (is_string($data) || is_numeric($data)) {
             echo $data;
