@@ -37,14 +37,10 @@ class Crontab
     public function processObserver()
     {
         while (true) {
+            // 如果有进程任务不结束 将一直停留在这里
             $pid = pcntl_waitpid(0, $status, WNOHANG);
-            if ($pid > 0) {
-
-                echo "Child process running " . $pid . PHP_EOL;
-
-            }else if($pid === -1){
-                // 发生错误时
-                echo "All child processing completed" . PHP_EOL;
+            if ($pid == -1) {
+                // 发生错误 或全部子进程结束
                 break;
             }
         }
