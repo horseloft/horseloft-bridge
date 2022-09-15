@@ -11,6 +11,37 @@ class Crontab
      */
     public $enableTime = 3;
 
+
+    /**
+     * 任务分发、执行
+     *
+     * @param array $crontabList
+     *
+     * @return array
+     */
+    public function runTask(array $crontabList): array
+    {
+        $runningTask = [];
+        foreach ($crontabList as $name => $task) {
+            // 本次已执行过
+            if (array_key_exists($name, $runningTask) || $this->isInvalidCrontab($task)) {
+                continue;
+            }
+
+            // 未到定时任务的执行时间
+            $timeCommand = $this->commandResolve($task['command']);
+            if (empty($timeCommand) || $this->isInvalidRunTime($timeCommand)) {
+                continue;
+            }
+
+            // 创建进程并执行任务
+            $runningTask[$name] = $name;
+            $args = empty($task['args']) ? [] : $task['args'];
+            $this->createProcess($name, $task['callback'], $args);
+        }
+        return $runningTask;
+    }
+
     /**
      * 创建进程
      *
@@ -99,12 +130,12 @@ class Crontab
                 continue;
             }
 
-            // 斜线分割的时间 斜线右侧应是符号* 或者 数字
+            // 斜线分割的时间 斜线右侧应是数字
             if (strpos($command, '/') !== false) {
                 $commandExp = explode('/', $command);
                 $masterCommand = $this->crontabTimeExplode($index, $commandExp[0]);
-                $timeSpace = $this->crontabTimeExplode($index, $commandExp[1]);
-                if (!is_array($masterCommand) || !is_int($timeSpace)) {
+                $timeSpace = intval($commandExp[1]);
+                if (empty($masterCommand) || $timeSpace <= 0) {
                     continue;
                 }
                 $runTime = [];
@@ -120,8 +151,11 @@ class Crontab
                 continue;
             }
 
-            // 逗号分割或短横线分割
-            array_push($commandRun, $this->crontabTimeExplode($index, $command));
+            // 逗号分割或短横线分割或日期数字
+            $default = $this->crontabTimeExplode($index, $command);
+            if (!empty($default)) {
+                array_push($commandRun, $default);
+            }
         }
         $commandRun = array_filter($commandRun);
         if (count($commandRun) != 5) {
@@ -131,13 +165,13 @@ class Crontab
     }
 
     /**
-     * 短横线-逗号-符号* 分割的时间
+     * 短横线、逗号分割的时间和数字间隔
      *
      * @param int $index
      * @param string $command
-     * @return array|int
+     * @return array
      */
-    private function crontabTimeExplode(int $index, string $command)
+    private function crontabTimeExplode(int $index, string $command): array
     {
         // 短横线分割
         if (strpos($command, '-') !== false) {
@@ -149,7 +183,12 @@ class Crontab
             return $this->crontabTimeComma($index, $command);
         }
 
-        return $command == '*' ? 1 : intval($command);
+        // 数字
+        $number = intval($command);
+        if ($number <= 0) {
+            return [];
+        }
+        return [$number];
     }
 
     /**
