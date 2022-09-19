@@ -30,11 +30,6 @@ class Container
     private static $errorLog = true;
 
     /**
-     * @var bool
-     */
-    private static $errorTraceLog = true;
-
-    /**
      * @var string
      */
     private static $env = [];
@@ -227,22 +222,6 @@ class Container
     public static function setErrorLog(bool $errorLog): void
     {
         self::$errorLog = $errorLog;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function isErrorTraceLog(): bool
-    {
-        return self::$errorTraceLog;
-    }
-
-    /**
-     * @param bool $errorTraceLog
-     */
-    public static function setErrorTraceLog(bool $errorTraceLog): void
-    {
-        self::$errorTraceLog = $errorTraceLog;
     }
 
     /**
