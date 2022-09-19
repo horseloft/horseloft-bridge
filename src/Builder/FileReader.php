@@ -98,11 +98,6 @@ class FileReader
             Container::setRequestLog(false);
         }
 
-        // 错误信息是否写入日志【默认值true】
-        if ($config['app']['error_log'] === false) {
-            Container::setErrorLog(false);
-        }
-
         // 日志记录的字段
         if (is_array($config['app']['request_log_fields'])) {
             Container::setRequestLogField($config['app']['request_log_fields']);

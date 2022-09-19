@@ -25,11 +25,6 @@ class Container
     private static $requestLog = true;
 
     /**
-     * @var bool
-     */
-    private static $errorLog = true;
-
-    /**
      * @var string
      */
     private static $env = [];
@@ -206,22 +201,6 @@ class Container
     public static function setRequestLog(bool $requestLog): void
     {
         self::$requestLog = $requestLog;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function isErrorLog(): bool
-    {
-        return self::$errorLog;
-    }
-
-    /**
-     * @param bool $errorLog
-     */
-    public static function setErrorLog(bool $errorLog): void
-    {
-        self::$errorLog = $errorLog;
     }
 
     /**
