@@ -3,7 +3,7 @@
 namespace Horseloft\Phalanx\Builder;
 
 use Horseloft\Phalanx\Handler\Container;
-use Horseloft\Phalanx\Handler\Logger;
+use Horseloft\Phalanx\Handler\Log;
 use Horseloft\Phalanx\InterceptorException;
 use Horseloft\Phalanx\RequestNotFoundException;
 
@@ -119,8 +119,7 @@ class LoopEvent
             return;
         }
         $exclude = Container::getRequestLogExclude();
-        $message = 'date=' . date('Y-m-d H:i:s') . '; ' .
-            'ip=' . Container::getRequestIP() .
+        $message = 'ip=' . Container::getRequestIP() .
             '; route=' . Container::getRequestRoute() .
             '; method=' . Container::getRequestMethod();
 
@@ -140,7 +139,7 @@ class LoopEvent
                     break;
             }
         }
-        Logger::info($message);
+        Log::info($message);
     }
 
     /**

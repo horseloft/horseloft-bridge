@@ -53,7 +53,7 @@ class Crontab
     {
         $pid = pcntl_fork();
         if ($pid == -1) {
-            Logger::error('crontab [' . $name . '] 进程创建失败');
+            Log::error('crontab [' . $name . '] 进程创建失败');
         } else if ($pid === 0) {
             // 子进程
             Container::setRequestParameter($args);
