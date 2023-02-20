@@ -86,13 +86,7 @@ class LoopEvent
             if (!isset($allInterceptor[$interceptor])) {
                 throw new InterceptorException($interceptor . ' Not Found');
             }
-            try {
-                $newInstance = (new ReflectionClass($allInterceptor[$interceptor]))->newInstance();
-                $refMethod = new ReflectionMethod($newInstance, 'handle');
-                $response = $refMethod->invoke($newInstance, new Request());
-            } catch (ReflectionException $e) {
-                throw new InterceptorException($interceptor . ' invoke Failed');
-            }
+            $response = Medium::reflectionMultiple($allInterceptor[$interceptor], 'handle', new Request());
             if ($response !== true) {
                 return $response;
             }

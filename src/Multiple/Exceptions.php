@@ -7,6 +7,11 @@ use Throwable;
 
 abstract class Exceptions
 {
+    public function __construct()
+    {
+
+    }
+
     /**
      * 默认异常处理类
      *
@@ -23,7 +28,7 @@ abstract class Exceptions
      *
      * @return mixed
      */
-    public static function handle(Request $request, Throwable $e)
+    public function handle(Request $request, Throwable $e)
     {
         return null;
     }

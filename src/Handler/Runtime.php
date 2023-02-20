@@ -2,6 +2,7 @@
 
 namespace Horseloft\Phalanx\Handler;
 
+use Horseloft\Phalanx\Builder\Medium;
 use Horseloft\Phalanx\Builder\Request;
 use Horseloft\Phalanx\Builder\Response;
 use Horseloft\Phalanx\ShutdownException;
@@ -41,9 +42,9 @@ class Runtime
      */
     public static function exception(Throwable $e)
     {
-        $namespace = Container::getNamespace() . 'Exceptions\\';
         try {
-            $response = call_user_func([$namespace . 'Runtime', 'handle'], new Request(), $e);
+            $class = Container::getNamespace() . 'Exceptions\Runtime';
+            $response = Medium::reflectionMultiple($class, 'handle', new Request(), $e);
             if (is_null($response)) {
                 exit();
             }
