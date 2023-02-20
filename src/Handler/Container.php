@@ -85,9 +85,9 @@ class Container
     private static $requestInterceptor = [];
 
     /**
-     * @var string
+     * @var callable
      */
-    private static $requestAction = [];
+    private static $requestAction;
 
     /**
      * @var array
@@ -413,17 +413,17 @@ class Container
     }
 
     /**
-     * @return string
+     * @return callable
      */
-    public static function getRequestAction(): string
+    public static function getRequestAction(): callable
     {
         return self::$requestAction;
     }
 
     /**
-     * @param string $requestAction
+     * @param callable $requestAction
      */
-    public static function setRequestAction(string $requestAction): void
+    public static function setRequestAction(callable $requestAction): void
     {
         self::$requestAction = $requestAction;
     }

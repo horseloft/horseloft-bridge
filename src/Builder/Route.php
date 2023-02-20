@@ -14,32 +14,28 @@ class Route
 
     /**
      * @param string $uri
-     * @param string $action
-     * @param string|null $namespace
+     * @param callable $action
      * @param string ...$interceptor
      */
-    public static function get(string $uri, string $action, string $namespace = null, string ...$interceptor)
+    public static function get(string $uri, callable $action, string ...$interceptor)
     {
         Container::setRouterGet(self::routeBuilder([
             'uri' => $uri,
             'action' => $action,
-            'namespace' => $namespace,
             'interceptor' => $interceptor
         ]));
     }
 
     /**
      * @param string $uri
-     * @param string $action
-     * @param string|null $namespace
+     * @param callable $action
      * @param string ...$interceptor
      */
-    public static function post(string $uri, string $action, string $namespace = null, string ...$interceptor)
+    public static function post(string $uri, callable $action, string ...$interceptor)
     {
         Container::setRouterPost(self::routeBuilder([
             'uri' => $uri,
             'action' => $action,
-            'namespace' => $namespace,
             'interceptor' => $interceptor
         ]));
     }
@@ -64,33 +60,19 @@ class Route
      */
     private static function routeBuilder(array $router): array
     {
-        // 路由组的命名空间
-        $configNamespace = empty(self::$config['namespace'])
-            ? ''
-            : trim(self::$config['namespace'], '\\') . '\\';
-        // 路由的命名空间
-        $routerNamespace = empty($router['namespace']) ? '' : trim($router['namespace'], '\\') . '\\';
-
         // 路由组的拦截器
         $configInterceptor = self::getRouterInterceptor(self::$config['interceptor'] ?? []);
         // 路由的拦截器
         $routerInterceptor = self::getRouterInterceptor($router['interceptor'] ?? []);
-
         // 全部拦截器
         $interceptor = array_merge($configInterceptor, $routerInterceptor);
-
-        // 完整路由的方法的命名空间
-        $namespace = Container::getNamespace() . 'Controllers\\' . $configNamespace . $routerNamespace;
-
         // 路由|路由前缀
         $routerPrefix = empty(self::$config['prefix']) ? '' : trim(self::$config['prefix'], '/');
         $routerUri = empty($router['uri']) ? '' : trim($router['uri'], '/');
         $uri = trim($routerPrefix . '/' . $routerUri, '/');
 
-        // 路由方法
-        $action = $namespace . $router['action'];
         return [
-            $uri => ['action' => $action, 'interceptor' => $interceptor]
+            $uri => ['action' => $router['action'], 'interceptor' => $interceptor]
         ];
     }
 

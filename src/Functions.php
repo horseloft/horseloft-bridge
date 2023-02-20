@@ -125,11 +125,10 @@ if (!function_exists('action')) {
      * ------------------------------------------------------
      * 当前请求指向的类方法
      * ------------------------------------------------------
-     * 例：Application\Controllers\IndexController::index
      *
-     * @return string
+     * @return callable
      */
-    function action(): string
+    function action(): callable
     {
         return Container::getRequestAction();
     }

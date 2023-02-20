@@ -153,43 +153,12 @@ class FileReader
         if ($isCommand) {
             return;
         }
-        $interceptor = [];
-        $namespace = $this->namespace . 'Interceptor\\';
-        $data = $this->readProgramFile($this->applicationRoot . 'Application/Interceptor/');
-
-        foreach ($data as $filename => $inspector) {
-            $interceptorClass = $namespace . $filename;
-            $cls = new ReflectionClass($interceptorClass);
-            $method = $cls->getMethod('handle');
-            $methodNumber = $method->getNumberOfParameters();
-            if ($methodNumber == 0) {
-                throw new InterceptorException(
-                    'Interceptor[' . $filename . '->handle] missing parameter: Request'
-                );
+        if (is_file($this->applicationRoot . '/Config/interceptor.php')) {
+            $interceptor = require $this->applicationRoot . '/Config/interceptor.php';
+            if (is_array($interceptor)) {
+                Container::setInterceptor($interceptor);
             }
-            if ($methodNumber > 1) {
-                throw new InterceptorException(
-                    'Interceptor[' . $filename . '->handle] allow only a [Request] type parameter'
-                );
-            }
-
-            $params = $method->getParameters();
-            $paramClass = $params[0]->getType();
-            if (is_null($paramClass)) {
-                throw new InterceptorException(
-                    'Interceptor[' . $filename . '->handle] first parameter must [Request]'
-                );
-            }
-
-            $paramClassName = $paramClass->getName();
-            if ($paramClassName != 'Horseloft\Phalanx\Builder\Request') {
-                throw new InterceptorException(
-                    'Interceptor[' . $filename . '->handle] first parameter must [Request]'
-                );
-            }
-            $interceptor[$filename] = [$interceptorClass, 'handle'];
         }
-        Container::setInterceptor($interceptor);
     }
 
     /**

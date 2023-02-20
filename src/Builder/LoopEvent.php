@@ -6,6 +6,9 @@ use Horseloft\Phalanx\Handler\Container;
 use Horseloft\Phalanx\Handler\Log;
 use Horseloft\Phalanx\InterceptorException;
 use Horseloft\Phalanx\RequestNotFoundException;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
 
 class LoopEvent
 {
@@ -83,10 +86,13 @@ class LoopEvent
             if (!isset($allInterceptor[$interceptor])) {
                 throw new InterceptorException($interceptor . ' Not Found');
             }
-            if (!is_callable($allInterceptor[$interceptor])) {
-                throw new InterceptorException($interceptor . ' Is Not Callable');
+            try {
+                $newInstance = (new ReflectionClass($allInterceptor[$interceptor]))->newInstance();
+                $refMethod = new ReflectionMethod($newInstance, 'handle');
+                $response = $refMethod->invoke($newInstance, new Request());
+            } catch (ReflectionException $e) {
+                throw new InterceptorException($interceptor . ' invoke Failed');
             }
-            $response = call_user_func($allInterceptor[$interceptor], new Request());
             if ($response !== true) {
                 return $response;
             }
@@ -95,9 +101,9 @@ class LoopEvent
     }
 
     /**
-     * @param string $action
+     * @param callable $action
      */
-    public function getActionResponse(string $action)
+    public function getActionResponse(callable $action)
     {
         Container::setRequestAction($action);
         // action验证

@@ -41,16 +41,9 @@ class Runtime
      */
     public static function exception(Throwable $e)
     {
-        $exceptionClassName = (new ReflectionClass($e))->getShortName();
-        $namespace = Container::getNamespace() . 'Runtime\\';
+        $namespace = Container::getNamespace() . 'Exceptions\\';
         try {
-            // 自定义异常处理
-            if (is_callable([$namespace . $exceptionClassName, 'handle'])) {
-                $response = call_user_func([$namespace . $exceptionClassName, 'handle'], new Request(), $e);
-            } else {
-                // 默认异常处理
-                $response = call_user_func([$namespace . 'Exception', 'handle'], new Request(), $e);
-            }
+            $response = call_user_func([$namespace . 'Runtime', 'handle'], new Request(), $e);
             if (is_null($response)) {
                 exit();
             }
