@@ -175,7 +175,7 @@ class LoopEvent
                 $parameter = array_merge($parameter, $json);
             }
         }
-        return $parameter;
+        return array_merge($parameter, $_FILES);
     }
 
     /**

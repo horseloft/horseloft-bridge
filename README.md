@@ -1,6 +1,9 @@
 # 说明
 当前项目是horseloft-phoenix框架的基础组件
 
+## v1.2.1
+1. Request::all()、Request::get()、方法新增上传文件支持
+
 ## v1.2.0
 1. 重构路由配置方式
 2. 优化异常处理
