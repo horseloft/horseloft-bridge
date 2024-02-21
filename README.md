@@ -2,7 +2,7 @@
 当前项目是Isobaric-phoenix框架的基础组件
 
 ## v2.0.0
-1. 
+1. 仓库重命名为Isobaric
 
 ## v1.2.1
 1. Request::all()、Request::get()、方法新增上传文件支持
