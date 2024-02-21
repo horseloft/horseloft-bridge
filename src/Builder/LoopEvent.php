@@ -1,14 +1,11 @@
 <?php
 
-namespace Horseloft\Phalanx\Builder;
+namespace Isobaric\Phalanx\Builder;
 
-use Horseloft\Phalanx\Handler\Container;
-use Horseloft\Phalanx\Handler\Log;
-use Horseloft\Phalanx\InterceptorException;
-use Horseloft\Phalanx\RequestNotFoundException;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
+use Isobaric\Phalanx\Handler\Container;
+use Isobaric\Phalanx\Handler\Log;
+use Isobaric\Phalanx\InterceptorException;
+use Isobaric\Phalanx\RequestNotFoundException;
 
 class LoopEvent
 {

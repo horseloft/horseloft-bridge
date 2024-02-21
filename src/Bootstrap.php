@@ -1,13 +1,13 @@
 <?php
 
-namespace Horseloft\Phalanx;
+namespace Isobaric\Phalanx;
 
-use Horseloft\Phalanx\Builder\LoopEvent;
-use Horseloft\Phalanx\Builder\Request;
-use Horseloft\Phalanx\Handler\Container;
-use Horseloft\Phalanx\Stater\CommandStater;
-use Horseloft\Phalanx\Stater\CrontabStarter;
-use Horseloft\Phalanx\Stater\HttpStater;
+use Isobaric\Phalanx\Builder\LoopEvent;
+use Isobaric\Phalanx\Builder\Request;
+use Isobaric\Phalanx\Handler\Container;
+use Isobaric\Phalanx\Stater\CommandStater;
+use Isobaric\Phalanx\Stater\CrontabStarter;
+use Isobaric\Phalanx\Stater\HttpStater;
 
 class Bootstrap
 {

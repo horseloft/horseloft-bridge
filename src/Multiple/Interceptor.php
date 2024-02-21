@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Phalanx\Multiple;
+namespace Isobaric\Phalanx\Multiple;
 
-use Horseloft\Phalanx\Builder\Request;
+use Isobaric\Phalanx\Builder\Request;
 
 abstract class Interceptor
 {
@@ -12,7 +12,7 @@ abstract class Interceptor
     }
 
     /**
-     * 拦截器必须有方法handle 并且handle必须指定参数$request 并且格式为 Horseloft\Core\Drawer\Request
+     * 拦截器必须有方法handle 并且handle必须指定参数$request 并且格式为 Isobaric\Core\Drawer\Request
      *
      * 仅当handle()方法的返回值===true时，允许请求通过拦截器
      *

@@ -1,6 +1,6 @@
 <?php
 
-namespace Horseloft\Phalanx\Handler;
+namespace Isobaric\Phalanx\Handler;
 
 class Container
 {
@@ -42,7 +42,7 @@ class Container
     /**
      * @var string
      */
-    private static $logFilename = 'horseloft';
+    private static $logFilename = 'Isobaric';
 
     /**
      * @var string

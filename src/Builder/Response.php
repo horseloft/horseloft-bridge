@@ -1,6 +1,6 @@
 <?php
 
-namespace Horseloft\Phalanx\Builder;
+namespace Isobaric\Phalanx\Builder;
 
 class Response
 {

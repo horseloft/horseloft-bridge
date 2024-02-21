@@ -1,5 +1,8 @@
 # 说明
-当前项目是horseloft-phoenix框架的基础组件
+当前项目是Isobaric-phoenix框架的基础组件
+
+## v2.0.0
+1. 
 
 ## v1.2.1
 1. Request::all()、Request::get()、方法新增上传文件支持
@@ -55,5 +58,5 @@
 1. 第一位数字为主版本号，版本变更不向下兼容；用于整体功能升级和框架结构升级
 2. 第二位数字为子版本号，版本变更向下兼容；用于新增功能
 3. 第三位数字为修订版本号，版本变更向下兼容；用于BUG修复
-4. v1版本适用于: horseloft/phoenix >= 1.0
-5. v2版本适用于：horseloft/phoenix >= 2.0
+4. v1版本适用于: Isobaric/phoenix >= 1.0
+5. v2版本适用于：Isobaric/phoenix >= 2.0

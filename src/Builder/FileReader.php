@@ -1,12 +1,9 @@
 <?php
-namespace Horseloft\Phalanx\Builder;
+namespace Isobaric\Phalanx\Builder;
 
 use Exception;
-use Horseloft\Phalanx\FileNotFoundException;
-use Horseloft\Phalanx\InterceptorException;
-use Horseloft\Phalanx\Handler\Container;
-use ReflectionClass;
-use ReflectionException;
+use Isobaric\Phalanx\FileNotFoundException;
+use Isobaric\Phalanx\Handler\Container;
 
 class FileReader
 {
@@ -144,9 +141,7 @@ class FileReader
      *
      * 3. handle方法必须有一个Request类型的参数
      *
-     * 4. Request类全路径：Horseloft\Core\Drawer\Request
-     *
-     * @throws ReflectionException
+     * 4. Request类全路径：Isobaric\Core\Drawer\Request
      */
     public function readSetInterceptor(bool $isCommand)
     {

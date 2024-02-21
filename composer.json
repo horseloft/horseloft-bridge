@@ -1,12 +1,12 @@
 {
-  "name": "horseloft/phalanx",
+  "name": "isobaric/phalanx",
   "type": "library",
   "description": "library for Phoenix framework",
-  "keywords": ["horseloft", "php"],
+  "keywords": ["isobaric", "php"],
   "authors": [
     {
       "name": "YHC",
-      "homepage": "https://github.com/horseloft"
+      "homepage": "https://github.com/isobaric"
     }
   ],
   "require": {
@@ -14,7 +14,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Horseloft\\Phalanx\\": "src"
+      "Isobaric\\Phalanx\\": "src"
     },
     "files": [
       "src/Functions.php"

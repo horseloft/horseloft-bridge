@@ -1,6 +1,6 @@
 <?php
 
-namespace Horseloft\Phalanx\Stater;
+namespace Isobaric\Phalanx\Stater;
 
 trait CommandStater
 {

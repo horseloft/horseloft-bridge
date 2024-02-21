@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Phalanx\Stater;
+namespace Isobaric\Phalanx\Stater;
 
-use Horseloft\Phalanx\Handler\Crontab;
+use Isobaric\Phalanx\Handler\Crontab;
 
 trait CrontabStarter
 {

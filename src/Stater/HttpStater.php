@@ -1,12 +1,12 @@
 <?php
 
-namespace Horseloft\Phalanx\Stater;
+namespace Isobaric\Phalanx\Stater;
 
-use Horseloft\Phalanx\Builder\FileReader;
-use Horseloft\Phalanx\Builder\LoopEvent;
-use Horseloft\Phalanx\Builder\Response;
-use Horseloft\Phalanx\Handler\Container;
-use Horseloft\Phalanx\Handler\Runtime;
+use Isobaric\Phalanx\Builder\FileReader;
+use Isobaric\Phalanx\Builder\LoopEvent;
+use Isobaric\Phalanx\Builder\Response;
+use Isobaric\Phalanx\Handler\Container;
+use Isobaric\Phalanx\Handler\Runtime;
 
 trait HttpStater
 {

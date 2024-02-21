@@ -1,6 +1,6 @@
 <?php
 
-use Horseloft\Phalanx\Handler\Container;
+use Isobaric\Phalanx\Handler\Container;
 
 if (!function_exists('env')) {
     /**

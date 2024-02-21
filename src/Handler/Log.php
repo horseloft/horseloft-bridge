@@ -1,9 +1,15 @@
 <?php
 
-namespace Horseloft\Phalanx\Handler;
+namespace Isobaric\Phalanx\Handler;
 
 final class Log
 {
+    /**
+     * @param string $message
+     * @param string $filename
+     * @param string $level
+     * @return void
+     */
     public static function log(string $message, string $filename = '', string $level = 'info')
     {
         self::write($message, $level, $filename);

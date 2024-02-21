@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Phalanx\Builder;
+namespace Isobaric\Phalanx\Builder;
 
-use Horseloft\Phalanx\ShutdownException;
+use Isobaric\Phalanx\ShutdownException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;

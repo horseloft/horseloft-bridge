@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Phalanx\Multiple;
+namespace Isobaric\Phalanx\Multiple;
 
-use Horseloft\Phalanx\Builder\Request;
+use Isobaric\Phalanx\Builder\Request;
 use Throwable;
 
 abstract class Exceptions
@@ -17,7 +17,7 @@ abstract class Exceptions
      *
      * 当前类中必须存在handle()方法
      *
-     * handle()方法的第一个参数：Horseloft\Bridge\Builder\Request $request
+     * handle()方法的第一个参数：Isobaric\Bridge\Builder\Request $request
      *
      * handle()方法的第二个参数：\Throwable $e
      *

@@ -1,12 +1,11 @@
 <?php
 
-namespace Horseloft\Phalanx\Handler;
+namespace Isobaric\Phalanx\Handler;
 
-use Horseloft\Phalanx\Builder\Medium;
-use Horseloft\Phalanx\Builder\Request;
-use Horseloft\Phalanx\Builder\Response;
-use Horseloft\Phalanx\ShutdownException;
-use ReflectionClass;
+use Isobaric\Phalanx\Builder\Medium;
+use Isobaric\Phalanx\Builder\Request;
+use Isobaric\Phalanx\Builder\Response;
+use Isobaric\Phalanx\ShutdownException;
 use Throwable;
 
 class Runtime

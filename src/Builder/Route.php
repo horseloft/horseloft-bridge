@@ -1,9 +1,9 @@
 <?php
 
-namespace Horseloft\Phalanx\Builder;
+namespace Isobaric\Phalanx\Builder;
 
 use Closure;
-use Horseloft\Phalanx\Handler\Container;
+use Isobaric\Phalanx\Handler\Container;
 
 class Route
 {

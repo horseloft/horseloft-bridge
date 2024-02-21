@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Phalanx\Handler;
+namespace Isobaric\Phalanx\Handler;
 
-use Horseloft\Phalanx\Builder\Request;
+use Isobaric\Phalanx\Builder\Request;
 
 class Crontab
 {

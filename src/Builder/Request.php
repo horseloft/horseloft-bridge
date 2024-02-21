@@ -1,8 +1,8 @@
 <?php
 
-namespace Horseloft\Phalanx\Builder;
+namespace Isobaric\Phalanx\Builder;
 
-use Horseloft\Phalanx\Handler\Container;
+use Isobaric\Phalanx\Handler\Container;
 
 class Request
 {
